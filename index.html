@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровой Лаунчер</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #181818; /* Темный фон */
+            color: #eee; /* Светлый текст */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Занимает всю высоту экрана */
+        }
+
+        header {
+            background-color: #282828; /* Более темный фон для шапки */
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+
+        h1 {
+            color: #eee;
+        }
+
+        main {
+            flex-grow: 1; /* Занимает доступное пространство */
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap; /* Позволяет элементам переноситься на новую строку */
+            justify-content: center; /* Центрирование по горизонтали */
+        }
+
+        .game-card {
+            background-color: #222;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            width: 250px; /* Фиксированная ширина карточки */
+            text-align: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s; /* Плавное масштабирование */
+        }
+
+        .game-card:hover {
+            transform: scale(1.05); /* Увеличение при наведении */
+        }
+
+        .game-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50; /* Зеленая кнопка */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Более темный зеленый при наведении */
+        }
+
+        footer {
+            background-color: #282828;
+            padding: 10px;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Мой Игровой Лаунчер</h1>
+    </header>
+
+    <main>
+        <div class="game-card">
+            <img src="placeholder.png" alt="Игра 1">
+            <h2>Игра 1</h2>
+            <p>Описание игры 1.</p>
+            <button onclick="launchGame('game1')">Играть</button>
+        </div>
+
+        <div class="game-card">
+            <img src="placeholder.png" alt="Игра 2">
+            <h2>Игра 2</h2>
+            <p>Описание игры 2.</p>
+            <button onclick="launchGame('game2')">Играть</button>
+        </div>
+
+        </main>
+
+    <footer>
+        <p>&copy; 2024 Мой лаунчер</p>
+    </footer>
+
+    <script>
+        function launchGame(gameId) {
+            alert("Запуск игры: " + gameId); // Замените на реальный запуск
+            // Здесь будет код для отправки сообщения в нативное приложение
+            // (если вы используете WebView)
+        }
+    </script>
+
+</body>
+</html>

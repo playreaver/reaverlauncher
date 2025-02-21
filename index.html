@@ -15,17 +15,34 @@
             background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
             font-family: 'Arial', sans-serif;
             position: relative;
+            transition: background 1s ease-in-out;
         }
 
-        /* Карточка с 3D эффектом */
+        /* Анимированные свечения на фоне */
+        .glow {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 192, 203, 0.3);
+            border-radius: 50%;
+            filter: blur(50px);
+            animation: moveGlow 5s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveGlow {
+            0% { transform: translate(-50px, -50px); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Карточка */
         .card-container {
             perspective: 1000px;
         }
 
         .card {
             position: relative;
-            width: 300px;
-            height: 400px;
+            width: 320px;
+            height: 420px;
             transform-style: preserve-3d;
             transform: rotateY(0deg);
             transition: transform 1s ease-in-out;
@@ -77,18 +94,15 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .heart {
-            font-size: 40px;
-            color: red;
-            animation: heartbeat 1s infinite alternate;
+        .input-name {
+            padding: 10px;
+            border: 1px solid #d63384;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
         }
 
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.2); }
-        }
-
-        .btn-music {
+        .btn {
             margin-top: 15px;
             background: #ff4d6d;
             color: white;
@@ -97,52 +111,44 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
+            transition: background 0.3s ease;
         }
 
-        .btn-music:hover {
+        .btn:hover {
             background: #d63384;
         }
 
-        /* Падающие лепестки */
-        .petal {
+        /* Конфетти */
+        .confetti {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background: pink;
+            width: 10px;
+            height: 10px;
+            background: red;
             border-radius: 50%;
             opacity: 0.8;
-            animation: fall linear infinite;
+            animation: fall 3s linear infinite;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); }
-            100% { transform: translateY(110vh) rotate(360deg); }
-        }
-
-        /* Партиклы-сердечки */
-        .particle {
-            position: absolute;
-            color: red;
-            font-size: 20px;
-            opacity: 1;
-            animation: rise 1.5s forwards;
-        }
-
-        @keyframes rise {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-100px); opacity: 0; }
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
         }
     </style>
 </head>
-<body onclick="spawnHeart(event)">
+<body>
+
+    <div class="glow" style="top: 10%; left: 20%;"></div>
+    <div class="glow" style="top: 60%; left: 70%;"></div>
 
     <div class="card-container">
         <div class="card" onclick="openCard(event)">
             <div class="card-front">💌 Нажми, чтобы открыть</div>
             <div class="card-back">
-                <h1>С 8 Марта! 🌸</h1>
+                <h1>С 8 Марта, <span id="userName">Дорогая!</span> 🌸</h1>
                 <p>Пусть этот день принесёт радость, тепло и улыбки! 💖</p>
-                <button class="btn-music" onclick="playMusic(event)">Включить музыку 🎶</button>
+                <input type="text" class="input-name" placeholder="Введите имя" oninput="updateName(this.value)">
+                <button class="btn" onclick="playMusic(event)">Включить музыку 🎶</button>
+                <button class="btn" onclick="toggleTheme()">🌗 Сменить тему</button>
             </div>
         </div>
     </div>
@@ -151,10 +157,17 @@
         <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
     </audio>
 
+    <audio id="flipSound">
+        <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
+    </audio>
+
     <script>
         function openCard(event) {
             event.stopPropagation();
-            document.querySelector('.card').classList.add('open');
+            let card = document.querySelector('.card');
+            card.classList.add('open');
+            document.getElementById('flipSound').play();
+            startConfetti();
         }
 
         function playMusic(event) {
@@ -167,25 +180,28 @@
             }
         }
 
-        function createPetal() {
-            let petal = document.createElement("div");
-            petal.classList.add("petal");
-            document.body.appendChild(petal);
-            petal.style.left = Math.random() * window.innerWidth + "px";
-            petal.style.animationDuration = (5 + Math.random() * 5) + "s";
-            petal.style.opacity = Math.random();
-            setTimeout(() => { petal.remove(); }, 10000);
+        function updateName(value) {
+            document.getElementById("userName").innerText = value || "Дорогая";
         }
-        setInterval(createPetal, 500);
 
-        function spawnHeart(event) {
-            let heart = document.createElement("div");
-            heart.classList.add("particle");
-            heart.innerHTML = "❤️";
-            heart.style.left = `${event.clientX}px`;
-            heart.style.top = `${event.clientY}px`;
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 1500);
+        function toggleTheme() {
+            let body = document.body;
+            if (body.style.background.includes("#ffdde1")) {
+                body.style.background = "linear-gradient(to bottom right, #a18cd1, #fbc2eb)";
+            } else {
+                body.style.background = "linear-gradient(to bottom right, #ffdde1, #ee9ca7)";
+            }
+        }
+
+        function startConfetti() {
+            for (let i = 0; i < 30; i++) {
+                let confetti = document.createElement("div");
+                confetti.classList.add("confetti");
+                document.body.appendChild(confetti);
+                confetti.style.left = Math.random() * window.innerWidth + "px";
+                confetti.style.animationDuration = (2 + Math.random() * 3) + "s";
+                setTimeout(() => { confetti.remove(); }, 5000);
+            }
         }
     </script>
 

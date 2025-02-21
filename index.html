@@ -14,44 +14,82 @@
             height: 100vh;
             background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
             font-family: 'Arial', sans-serif;
+            position: relative;
         }
+
+        /* Карточка с 3D эффектом */
+        .card-container {
+            perspective: 1000px;
+        }
+
         .card {
             position: relative;
             width: 300px;
             height: 400px;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg);
+            transition: transform 1s ease-in-out;
+            cursor: pointer;
+        }
+
+        .card.open {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             background: white;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             text-align: center;
             padding: 20px;
-            cursor: pointer;
-            transition: transform 0.5s ease-in-out;
+            backface-visibility: hidden;
         }
-        .card:hover {
-            transform: scale(1.05);
-        }
-        .card h1 {
-            color: #d63384;
+
+        .card-front {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 24px;
+            font-weight: bold;
+            color: #d63384;
         }
-        .card p {
-            font-size: 16px;
+
+        .card-back {
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-back p {
+            font-size: 18px;
             color: #555;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
         }
-        .card .heart {
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .heart {
             font-size: 40px;
             color: red;
             animation: heartbeat 1s infinite alternate;
         }
+
         @keyframes heartbeat {
             0% { transform: scale(1); }
             100% { transform: scale(1.2); }
         }
+
         .btn-music {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
+            margin-top: 15px;
             background: #ff4d6d;
             color: white;
             border: none;
@@ -60,10 +98,12 @@
             cursor: pointer;
             font-size: 14px;
         }
+
         .btn-music:hover {
             background: #d63384;
         }
-        /* Анимация лепестков */
+
+        /* Падающие лепестки */
         .petal {
             position: absolute;
             width: 20px;
@@ -73,19 +113,38 @@
             opacity: 0.8;
             animation: fall linear infinite;
         }
+
         @keyframes fall {
             0% { transform: translateY(-10vh) rotate(0deg); }
             100% { transform: translateY(110vh) rotate(360deg); }
         }
+
+        /* Партиклы-сердечки */
+        .particle {
+            position: absolute;
+            color: red;
+            font-size: 20px;
+            opacity: 1;
+            animation: rise 1.5s forwards;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
     </style>
 </head>
-<body>
+<body onclick="spawnHeart(event)">
 
-    <div class="card" onclick="openCard()">
-        <h1>С 8 Марта! 🌸</h1>
-        <p id="message" style="display: none;">Пусть этот день принесёт радость, тепло и улыбки! 💖</p>
-        <span class="heart">❤️</span>
-        <button class="btn-music" onclick="playMusic(event)">Включить музыку 🎶</button>
+    <div class="card-container">
+        <div class="card" onclick="openCard(event)">
+            <div class="card-front">💌 Нажми, чтобы открыть</div>
+            <div class="card-back">
+                <h1>С 8 Марта! 🌸</h1>
+                <p>Пусть этот день принесёт радость, тепло и улыбки! 💖</p>
+                <button class="btn-music" onclick="playMusic(event)">Включить музыку 🎶</button>
+            </div>
+        </div>
     </div>
 
     <audio id="bgMusic" loop>
@@ -93,12 +152,13 @@
     </audio>
 
     <script>
-        function openCard() {
-            document.getElementById("message").style.display = "block";
+        function openCard(event) {
+            event.stopPropagation();
+            document.querySelector('.card').classList.add('open');
         }
 
         function playMusic(event) {
-            event.stopPropagation(); 
+            event.stopPropagation();
             let music = document.getElementById("bgMusic");
             if (music.paused) {
                 music.play();
@@ -107,7 +167,6 @@
             }
         }
 
-        // Генерация падающих лепестков
         function createPetal() {
             let petal = document.createElement("div");
             petal.classList.add("petal");
@@ -118,6 +177,16 @@
             setTimeout(() => { petal.remove(); }, 10000);
         }
         setInterval(createPetal, 500);
+
+        function spawnHeart(event) {
+            let heart = document.createElement("div");
+            heart.classList.add("particle");
+            heart.innerHTML = "❤️";
+            heart.style.left = `${event.clientX}px`;
+            heart.style.top = `${event.clientY}px`;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1500);
+        }
     </script>
 
 </body>

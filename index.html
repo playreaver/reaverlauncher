@@ -3,289 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Игровой Лаунчер</title>
+    <title>8 Марта - Виртуальная Открытка</title>
     <style>
-body {
-    font-family: sans-serif;
-    background-color: #181818;
-    color: #eee;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-header {
-    background-color: #282828;
-    padding: 20px;
-    text-align: center;
-    border-bottom: 1px solid #333;
-    display: flex;
-    flex-direction: column; /* Чтобы поиск и теги были под заголовком */
-    align-items: center; /* Центрирование по горизонтали */
-}
-
-h1 {
-    color: #eee;
-    margin-bottom: 10px; /* Отступ снизу от заголовка */
-}
-
-#search-bar {
-    width: 80%; /* Занимает большую часть ширины */
-    max-width: 500px; /* Максимальная ширина */
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    border-radius: 5px;
-    border: 1px solid #555;
-    background-color: #333; /* Темный фон для поля поиска */
-    color: #eee;
-}
-
-.tag-container { /* Контейнер для тегов */
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-
-.tag-button {
-    background-color: #333;
-    border: none;
-    color: white;
-    padding: 8px 16px; /* Увеличены отступы */
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    margin: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.tag-button.active {
-    background-color: #4CAF50;
-}
-
-main {
-    flex-grow: 1;
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.game-card {
-    background-color: #222;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 10px;
-    width: 250px;
-    text-align: center;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s;
-    display: none; /* По умолчанию скрыты */
-}
-
-.game-card.visible {
-    display: block; /* Отображаются только отфильтрованные */
-}
-
-.game-card img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-.game-card h2 {
-    margin-bottom: 5px; /* Уменьшен отступ у h2 */
-}
-
-.game-card p {
-    font-size: 14px;
-    color: #aaa; /* Более светлый текст для описания */
-}
-
-.game-card button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 5px; /* добавляем отступ кнопкам */
-}
-
-.game-card button:hover {
-    background-color: #45a049;
-}
-
-/* Улучшенные стили для модального окна */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.7); /* Более темный фон */
-    display: flex; /* Для центрирования контента */
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background-color: #282828; /* Темный фон для контента */
-    color: #eee;
-    padding: 20px;
-    border: none;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 600px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Тень для модального окна */
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-footer {
-    background-color: #282828;
-    padding: 10px;
-    text-align: center;
-    border-top: 1px solid #333;
-}
-
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
+            font-family: 'Arial', sans-serif;
+        }
+        .card {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.5s ease-in-out;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card h1 {
+            color: #d63384;
+            font-size: 24px;
+        }
+        .card p {
+            font-size: 16px;
+            color: #555;
+        }
+        .card .heart {
+            font-size: 40px;
+            color: red;
+            animation: heartbeat 1s infinite alternate;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+        .btn-music {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-music:hover {
+            background: #d63384;
+        }
+        /* Анимация лепестков */
+        .petal {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: pink;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Мой Игровой Лаунчер</h1>
-        <input type="text" id="search-bar" placeholder="Поиск игры...">
-         <div>
-        <button class="tag-button active" data-tag="all">Все</button>
-        <button class="tag-button" data-tag="action">Экшен</button>
-        <button class="tag-button" data-tag="strategy">Стратегии</button>
-        <button class="tag-button" data-tag="rpg">RPG</button>
-    </div>
-    </header>
-
-    <main>
-        <div class="game-card" data-tags="action,rpg" data-name="Игра 1">
-            <img src="placeholder.png" alt="Игра 1">
-            <h2>Игра 1</h2>
-            <p>Описание игры 1. Экшен/РПГ</p>
-            <button onclick="launchGame('game1')">Играть</button>
-             <button onclick="showModal('game1')">Подробнее</button>
-        </div>
-
-        <div class="game-card" data-tags="strategy" data-name="Игра 2">
-            <img src="placeholder.png" alt="Игра 2">
-            <h2>Игра 2</h2>
-            <p>Описание игры 2. Стратегия.</p>
-            <button onclick="launchGame('game2')">Играть</button>
-            <button onclick="showModal('game2')">Подробнее</button>
-        </div>
-
-                <div class="game-card" data-tags="action" data-name="Игра 3">
-            <img src="placeholder.png" alt="Игра 3">
-            <h2>Игра 3</h2>
-            <p>Описание игры 3. Экшен.</p>
-            <button onclick="launchGame('game3')">Играть</button>
-            <button onclick="showModal('game3')">Подробнее</button>
-        </div>
-
-
-    </main>
-
-    <div id="gameModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modal-title"></h2>
-            <p id="modal-description"></p>
-            </div>
+    <div class="card" onclick="openCard()">
+        <h1>С 8 Марта! 🌸</h1>
+        <p id="message" style="display: none;">Пусть этот день принесёт радость, тепло и улыбки! 💖</p>
+        <span class="heart">❤️</span>
+        <button class="btn-music" onclick="playMusic(event)">Включить музыку 🎶</button>
     </div>
 
-    <footer>
-        <p>&copy; 2024 Мой лаунчер</p>
-    </footer>
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-    const gameCards = document.querySelectorAll('.game-card');
-    const searchBar = document.getElementById('search-bar');
-    const tagButtons = document.querySelectorAll('.tag-button');
-    const modal = document.getElementById("gameModal");
-    const modalTitle = document.getElementById("modal-title");
-    const modalDescription = document.getElementById("modal-description");
-    const gameData = {
-      "game1": { title: "Игра 1", description: "Полное описание игры 1. Очень интересная игра!" },
-      "game2": { title: "Игра 2", description: "Полное описание игры 2. Стратегия про завоевание мира." },
-            "game3": { title: "Игра 3", description: "Полное описание игры 3. Быстрый экшен!" }
-    };
-
-        function filterGames() {
-            const searchTerm = searchBar.value.toLowerCase();
-            const activeTag = document.querySelector('.tag-button.active').dataset.tag;
-
-             gameCards.forEach(card => {
-                const gameName = card.dataset.name.toLowerCase();
-                const gameTags = card.dataset.tags.split(',');
-                const nameMatches = gameName.includes(searchTerm);
-                const tagMatches = activeTag === 'all' || gameTags.includes(activeTag);
-
-                if (nameMatches && tagMatches) {
-                  card.classList.add('visible');
-                 } else {
-                   card.classList.remove('visible');
-                 }
-
-            });
-
-        }
-            searchBar.addEventListener('input', filterGames);
-
-
-    tagButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        tagButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        filterGames(); // Перефильтруем игры после смены тега
-    });
-});
-
-        function launchGame(gameId) {
-            alert("Запуск игры: " + gameId);
+        function openCard() {
+            document.getElementById("message").style.display = "block";
         }
 
-        function showModal(gameId) {
-         modalTitle.textContent = gameData[gameId].title;
-          modalDescription.textContent = gameData[gameId].description;
-            modal.style.display = "block";
+        function playMusic(event) {
+            event.stopPropagation(); 
+            let music = document.getElementById("bgMusic");
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
         }
 
-        function closeModal() {
-            modal.style.display = "none";
+        // Генерация падающих лепестков
+        function createPetal() {
+            let petal = document.createElement("div");
+            petal.classList.add("petal");
+            document.body.appendChild(petal);
+            petal.style.left = Math.random() * window.innerWidth + "px";
+            petal.style.animationDuration = (5 + Math.random() * 5) + "s";
+            petal.style.opacity = Math.random();
+            setTimeout(() => { petal.remove(); }, 10000);
         }
-// Закрытие модального окна при клике вне окна
-window.onclick = function(event) {
-    if (event.target == modal) {
-        closeModal();
-    }
-}
+        setInterval(createPetal, 500);
     </script>
 
 </body>

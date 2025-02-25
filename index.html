@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Соцсеть</title>
+    <title>PartNet - Соцсеть будущего</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <h1>Моя соцсеть</h1>
-        <button onclick="toggleLogin()">Войти</button>
+        <h1>PartNet</h1>
+        <button class="login-btn" onclick="toggleLogin()">Войти</button>
     </header>
 
     <main>
+        <div class="post-box">
+            <textarea id="postInput" placeholder="О чём думаешь?"></textarea>
+            <button class="post-btn" onclick="addPost()">➤ Опубликовать</button>
+        </div>
+
         <div id="posts">
             <!-- Здесь будут посты -->
         </div>
-        <textarea id="postInput" placeholder="Напиши что-нибудь..."></textarea>
-        <button onclick="addPost()">Опубликовать</button>
     </main>
 
     <script src="script.js"></script>

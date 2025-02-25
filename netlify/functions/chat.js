@@ -1,23 +1,19 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
-    // Проверяем, что запрос является POST
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
-            body: 'Method Not Allowed',
+            body: JSON.stringify({ error: 'Method Not Allowed' }),
         };
     }
 
-    // Получаем сообщение от пользователя
     const { message } = JSON.parse(event.body);
 
-    // Ваш API ключ и URL DeepSeek
     const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat';
-    const DEEPSEEK_API_KEY = 'sk-3920d8a418cb4472bcaa434bec5dd57f';
+    const DEEPSEEK_API_KEY = 'sk-98d8269686cc4c00979076ce4a1e029b';
 
     try {
-        // Отправляем запрос к DeepSeek
         const response = await fetch(DEEPSEEK_API_URL, {
             method: 'POST',
             headers: {
@@ -29,12 +25,12 @@ exports.handler = async (event, context) => {
 
         const data = await response.json();
 
-        // Возвращаем ответ от DeepSeek
         return {
             statusCode: 200,
             body: JSON.stringify(data),
         };
     } catch (error) {
+        console.error('Error:', error);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Internal Server Error' }),

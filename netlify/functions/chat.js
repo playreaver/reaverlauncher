@@ -11,7 +11,7 @@ exports.handler = async (event, context) => {
     const { message } = JSON.parse(event.body);
 
     const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat';
-    const DEEPSEEK_API_KEY = 'sk-67bacbe36fba437ba67c81f607281bc1'; // Замените на ваш реальный API ключ
+    const DEEPSEEK_API_KEY = 'sk-67bacbe36fba437ba67c81f607281bc1'; // Ваш API ключ
 
     try {
         const response = await fetch(DEEPSEEK_API_URL, {

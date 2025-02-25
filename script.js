@@ -1,3 +1,5 @@
+import { db } from './firebase';
+
 function addPost() {
     let input = document.getElementById("postInput");
     let text = input.value.trim();
@@ -7,65 +9,87 @@ function addPost() {
         return;
     }
 
-    let postsDiv = document.getElementById("posts");
-    let newPost = document.createElement("div");
-    newPost.classList.add("post");
-
-    // Добавляем текст, лайки и комментарии
-    newPost.innerHTML = `
-        <p>${text}</p>
-        <div class="post-actions">
-            <button class="like-btn" onclick="toggleLike(this)">❤️ 0</button>
-            <button class="comment-btn" onclick="toggleComments(this)">💬 0</button>
-        </div>
-        <div class="comments" style="display: none;">
-            <input type="text" class="comment-input" placeholder="Написать комментарий...">
-            <button class="send-comment" onclick="addComment(this)">Отправить</button>
-            <div class="comment-list"></div>
-        </div>
-    `;
-
-    postsDiv.prepend(newPost);
-    setTimeout(() => newPost.classList.add("show"), 50);
-    input.value = "";
+    // Добавляем новый пост в Firebase
+    db.collection("posts").add({
+        text: text,
+        likes: 0,
+        comments: [],
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log("Post added!");
+        input.value = "";
+    }).catch(error => {
+        console.error("Error adding post: ", error);
+    });
 }
 
-function toggleLike(btn) {
-    let likes = parseInt(btn.innerText.split(" ")[1]); // Получаем текущее число лайков
-    if (btn.classList.contains("liked")) {
-        btn.classList.remove("liked");
-        likes--;
-    } else {
-        btn.classList.add("liked");
-        likes++;
-    }
-    btn.innerText = `❤️ ${likes}`;
+// Функция для получения постов из Firestore
+function getPosts() {
+    db.collection("posts").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+        let postsDiv = document.getElementById("posts");
+        postsDiv.innerHTML = ""; // Очистить старые посты
+
+        snapshot.forEach(doc => {
+            let post = doc.data();
+            let postId = doc.id;
+            let newPost = document.createElement("div");
+            newPost.classList.add("post");
+            newPost.setAttribute("data-id", postId);
+
+            newPost.innerHTML = `
+                <p>${post.text}</p>
+                <div class="post-actions">
+                    <button class="like-btn" onclick="toggleLike(this, '${postId}')">❤️ ${post.likes}</button>
+                    <button class="comment-btn" onclick="toggleComments(this)">💬 ${post.comments.length}</button>
+                </div>
+                <div class="comments" style="display: none;">
+                    <input type="text" class="comment-input" placeholder="Написать комментарий...">
+                    <button class="send-comment" onclick="addComment(this, '${postId}')">Отправить</button>
+                    <div class="comment-list"></div>
+                </div>
+            `;
+            
+            postsDiv.prepend(newPost);
+        });
+    });
+}
+
+// Функция для лайков
+function toggleLike(btn, postId) {
+    let postRef = db.collection("posts").doc(postId);
+
+    postRef.get().then(doc => {
+        if (doc.exists) {
+            let post = doc.data();
+            let newLikes = post.likes + 1;
+            postRef.update({
+                likes: newLikes
+            }).then(() => {
+                btn.innerText = `❤️ ${newLikes}`;
+            });
+        }
+    });
+}
+
+// Функция добавления комментариев
+function addComment(btn, postId) {
+    let postRef = db.collection("posts").doc(postId);
+    let input = btn.closest(".post").querySelector(".comment-input");
+    let text = input.value.trim();
+
+    if (text === "") return;
+
+    postRef.update({
+        comments: firebase.firestore.FieldValue.arrayUnion(text)
+    }).then(() => {
+        input.value = ""; // Очистить input
+    });
 }
 
 function toggleComments(btn) {
     let post = btn.closest(".post");
     let comments = post.querySelector(".comments");
     comments.style.display = comments.style.display === "none" ? "block" : "none";
-}
-
-function addComment(btn) {
-    let post = btn.closest(".post");
-    let input = post.querySelector(".comment-input");
-    let text = input.value.trim();
-
-    if (text === "") return;
-
-    let commentList = post.querySelector(".comment-list");
-    let newComment = document.createElement("p");
-    newComment.classList.add("comment");
-    newComment.innerText = text;
-
-    commentList.appendChild(newComment);
-    input.value = "";
-
-    let commentBtn = post.querySelector(".comment-btn");
-    let commentsCount = parseInt(commentBtn.innerText.split(" ")[1]) + 1;
-    commentBtn.innerText = `💬 ${commentsCount}`;
 }
 
 function toggleLogin() {
@@ -118,3 +142,7 @@ function showMessage(text, color) {
     msg.innerText = text;
     msg.style.color = color;
 }
+
+// Загрузка постов при запуске
+getPosts();
+

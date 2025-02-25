@@ -10,7 +10,7 @@ exports.handler = async (event, context) => {
 
     const { message } = JSON.parse(event.body);
 
-    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat';
+    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/completions';
     const DEEPSEEK_API_KEY = 'sk-67bacbe36fba437ba67c81f607281bc1'; // Ваш API ключ
 
     try {
@@ -20,7 +20,11 @@ exports.handler = async (event, context) => {
                 'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ message }),
+            body: JSON.stringify({
+                prompt: message,
+                max_tokens: 50,
+                temperature: 0.7,
+            }),
         });
 
         if (!response.ok) {

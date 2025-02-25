@@ -34,14 +34,15 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Network response was not ok');
                 }
 
                 const data = await response.json();
                 chatLog.innerHTML += `<div><strong>DeepSeek:</strong> ${data.message}</div>`;
             } catch (error) {
                 console.error('Error:', error);
-                chatLog.innerHTML += `<div><strong>Error:</strong> Something went wrong. Please try again.</div>`;
+                chatLog.innerHTML += `<div><strong>Error:</strong> ${error.message}</div>`;
             }
         });
     </script>

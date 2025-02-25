@@ -21,23 +21,28 @@
             const message = userInput.value;
             if (message.trim() === '') return;
 
-            // Добавляем сообщение пользователя в чат
             chatLog.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
             userInput.value = '';
 
-            // Отправляем сообщение на Netlify Function
-            const response = await fetch('/.netlify/functions/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message }),
-            });
+            try {
+                const response = await fetch('/.netlify/functions/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message }),
+                });
 
-            const data = await response.json();
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-            // Добавляем ответ от DeepSeek в чат
-            chatLog.innerHTML += `<div><strong>DeepSeek:</strong> ${data.message}</div>`;
+                const data = await response.json();
+                chatLog.innerHTML += `<div><strong>DeepSeek:</strong> ${data.message}</div>`;
+            } catch (error) {
+                console.error('Error:', error);
+                chatLog.innerHTML += `<div><strong>Error:</strong> Something went wrong. Please try again.</div>`;
+            }
         });
     </script>
 </body>

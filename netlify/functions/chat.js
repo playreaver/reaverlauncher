@@ -23,6 +23,10 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({ message }),
         });
 
+        if (!response.ok) {
+            throw new Error(`DeepSeek API error: ${response.statusText}`);
+        }
+
         const data = await response.json();
 
         return {
@@ -33,7 +37,7 @@ exports.handler = async (event, context) => {
         console.error('Error:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Internal Server Error' }),
+            body: JSON.stringify({ error: error.message }),
         };
     }
 };

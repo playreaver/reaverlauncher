@@ -1,6 +1,5 @@
-// src/firebase.js
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
@@ -14,30 +13,27 @@ const firebaseConfig = {
 
 // Инициализация Firebase
 const app = initializeApp(firebaseConfig);
-
-// Получение и использование аутентификации
 const auth = getAuth(app);
 
-// Пример функции для регистрации
+// Функция для регистрации пользователя
 export const registerUser = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    console.log('Регистрация успешна:', user);
+    return userCredential.user;
   } catch (error) {
-    console.error('Ошибка регистрации:', error.message);
+    throw new Error(error.message);
   }
 };
 
-// Пример функции для входа
+// Функция для входа пользователя
 export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    console.log('Вход успешен:', user);
+    return userCredential.user;
   } catch (error) {
-    console.error('Ошибка входа:', error.message);
+    throw new Error(error.message);
   }
 };
 
 export default app;
+

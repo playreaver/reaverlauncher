@@ -1,4 +1,4 @@
-import { db } from './firebase';
+import { registerUser, loginUser } from './firebase';
 
 function addPost() {
     let input = document.getElementById("postInput");
@@ -23,73 +23,53 @@ function addPost() {
     });
 }
 
-// Функция для получения постов из Firestore
-function getPosts() {
-    db.collection("posts").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-        let postsDiv = document.getElementById("posts");
-        postsDiv.innerHTML = ""; // Очистить старые посты
+// Функция регистрации с использованием Firebase
+function register() {
+    let email = document.getElementById("username").value.trim(); // Используем email для регистрации
+    let password = document.getElementById("password").value.trim();
 
-        snapshot.forEach(doc => {
-            let post = doc.data();
-            let postId = doc.id;
-            let newPost = document.createElement("div");
-            newPost.classList.add("post");
-            newPost.setAttribute("data-id", postId);
+    if (!email || !password) {
+        showMessage("Заполните все поля!", "red");
+        return;
+    }
 
-            newPost.innerHTML = `
-                <p>${post.text}</p>
-                <div class="post-actions">
-                    <button class="like-btn" onclick="toggleLike(this, '${postId}')">❤️ ${post.likes}</button>
-                    <button class="comment-btn" onclick="toggleComments(this)">💬 ${post.comments.length}</button>
-                </div>
-                <div class="comments" style="display: none;">
-                    <input type="text" class="comment-input" placeholder="Написать комментарий...">
-                    <button class="send-comment" onclick="addComment(this, '${postId}')">Отправить</button>
-                    <div class="comment-list"></div>
-                </div>
-            `;
-            
-            postsDiv.prepend(newPost);
+    // Регистрация через Firebase
+    registerUser(email, password)
+        .then(() => {
+            showMessage("Регистрация успешна!", "green");
+            closeModal();
+        })
+        .catch(error => {
+            showMessage(error.message, "red");
         });
-    });
 }
 
-// Функция для лайков
-function toggleLike(btn, postId) {
-    let postRef = db.collection("posts").doc(postId);
+// Функция входа с использованием Firebase
+function login() {
+    let email = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value.trim();
 
-    postRef.get().then(doc => {
-        if (doc.exists) {
-            let post = doc.data();
-            let newLikes = post.likes + 1;
-            postRef.update({
-                likes: newLikes
-            }).then(() => {
-                btn.innerText = `❤️ ${newLikes}`;
-            });
-        }
-    });
+    if (!email || !password) {
+        showMessage("Заполните все поля!", "red");
+        return;
+    }
+
+    // Вход через Firebase
+    loginUser(email, password)
+        .then(() => {
+            showMessage(`Добро пожаловать, ${email}!`, "green");
+            closeModal();
+            document.querySelector(".login-btn").innerText = email; // Меняем кнопку на email
+        })
+        .catch(error => {
+            showMessage(error.message, "red");
+        });
 }
 
-// Функция добавления комментариев
-function addComment(btn, postId) {
-    let postRef = db.collection("posts").doc(postId);
-    let input = btn.closest(".post").querySelector(".comment-input");
-    let text = input.value.trim();
-
-    if (text === "") return;
-
-    postRef.update({
-        comments: firebase.firestore.FieldValue.arrayUnion(text)
-    }).then(() => {
-        input.value = ""; // Очистить input
-    });
-}
-
-function toggleComments(btn) {
-    let post = btn.closest(".post");
-    let comments = post.querySelector(".comments");
-    comments.style.display = comments.style.display === "none" ? "block" : "none";
+function showMessage(text, color) {
+    let msg = document.getElementById("authMessage");
+    msg.innerText = text;
+    msg.style.color = color;
 }
 
 function toggleLogin() {
@@ -99,50 +79,4 @@ function toggleLogin() {
 function closeModal() {
     document.getElementById("authModal").style.display = "none";
 }
-
-function register() {
-    let username = document.getElementById("username").value.trim();
-    let password = document.getElementById("password").value.trim();
-
-    if (!username || !password) {
-        showMessage("Заполните все поля!", "red");
-        return;
-    }
-
-    if (localStorage.getItem(username)) {
-        showMessage("Пользователь уже существует!", "red");
-        return;
-    }
-
-    localStorage.setItem(username, password);
-    showMessage("Регистрация успешна!", "green");
-}
-
-function login() {
-    let username = document.getElementById("username").value.trim();
-    let password = document.getElementById("password").value.trim();
-
-    if (!username || !password) {
-        showMessage("Заполните все поля!", "red");
-        return;
-    }
-
-    let storedPassword = localStorage.getItem(username);
-    if (storedPassword === password) {
-        showMessage(`Добро пожаловать, ${username}!`, "green");
-        closeModal();
-        document.querySelector(".login-btn").innerText = username;
-    } else {
-        showMessage("Неверные данные!", "red");
-    }
-}
-
-function showMessage(text, color) {
-    let msg = document.getElementById("authMessage");
-    msg.innerText = text;
-    msg.style.color = color;
-}
-
-// Загрузка постов при запуске
-getPosts();
 

@@ -1,16 +1,29 @@
 /* Общие стили */
 body {
     font-family: "Arial", sans-serif;
-    background-color: #121212;
+    background-color: #0d1117;
     color: #fff;
     margin: 0;
     padding: 0;
     text-align: center;
 }
 
+/* Анимация появления */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Контейнер для центрирования */
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
 /* Хедер */
 header {
-    background: #1E1E1E;
+    background: #161b22;
     padding: 15px;
     display: flex;
     justify-content: space-between;
@@ -37,39 +50,43 @@ button {
 .login-btn {
     background: #00bfff;
     color: white;
+    font-weight: bold;
 }
 
 .login-btn:hover {
     background: #0088cc;
 }
 
-/* Форма публикации постов */
+/* Форма публикации */
 .post-box {
-    background: #1E1E1E;
+    background: #161b22;
     padding: 20px;
-    width: 50%;
-    margin: 20px auto;
+    width: 100%;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 textarea {
     width: 100%;
-    height: 50px;
+    height: 60px;
     padding: 10px;
     border-radius: 8px;
     border: none;
     outline: none;
     font-size: 16px;
-    background: #2A2A2A;
+    background: #21262d;
     color: white;
+    resize: none;
 }
 
+/* Кнопка публикации */
 .post-btn {
     background: #00bfff;
     color: white;
     margin-top: 10px;
     width: 100%;
+    font-weight: bold;
 }
 
 .post-btn:hover {
@@ -82,15 +99,32 @@ textarea {
 }
 
 .post {
-    background: #1E1E1E;
+    background: #161b22;
     margin: 10px auto;
     padding: 15px;
-    width: 50%;
     border-radius: 10px;
     box-shadow: 0px 2px 5px rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+    opacity: 0;
+}
+
+.post.show {
+    opacity: 1;
 }
 
 .post p {
     font-size: 18px;
     margin: 0;
 }
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+
+    .post-box, .post {
+        width: 100%;
+    }
+}
+

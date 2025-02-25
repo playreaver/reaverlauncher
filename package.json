@@ -1,1 +1,12 @@
-
+{
+  "name": "my-netlify-site",
+  "version": "1.0.0",
+  "description": "A site with Netlify Functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "node-fetch": "^3.0.0"
+  }
+}

@@ -1,4 +1,4 @@
-import { registerUser, loginUser } from './firebase';
+import { auth, db } from './firebase.js'; // Импортируем auth и db из firebase.js
 
 function addPost() {
     let input = document.getElementById("postInput");

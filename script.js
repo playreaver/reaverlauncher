@@ -1,4 +1,18 @@
-import { auth, db, registerUser, loginUser } from './src/firebase.js'; // Убедись, что импортируешь все нужные функции
+// Инициализация Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
+    authDomain: "reaversocial.firebaseapp.com",
+    projectId: "reaversocial",
+    storageBucket: "reaversocial.firebasestorage.app",
+    messagingSenderId: "461982892032",
+    appId: "1:461982892032:web:5327c7e66a4ddddff1d8e5",
+    measurementId: "G-CD344TGD2D"
+};
+
+// Инициализация Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 // Функция добавления поста
 function addPost() {
@@ -35,7 +49,7 @@ function register() {
     }
 
     // Регистрация через Firebase
-    registerUser(email, password)
+    firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(() => {
             showMessage("Регистрация успешна!", "green");
             closeModal();
@@ -56,7 +70,7 @@ function login() {
     }
 
     // Вход через Firebase
-    loginUser(email, password)
+    firebase.auth().signInWithEmailAndPassword(email, password)
         .then(() => {
             showMessage(`Добро пожаловать, ${email}!`, "green");
             closeModal();

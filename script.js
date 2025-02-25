@@ -1,4 +1,4 @@
-import { auth, db } from './firebase.js'; // Импортируем auth и db из firebase.js
+import { auth, db, registerUser, loginUser } from './firebase.js'; // Импортируем функции и объекты из firebase.js
 
 function addPost() {
     let input = document.getElementById("postInput");
@@ -14,7 +14,7 @@ function addPost() {
         text: text,
         likes: 0,
         comments: [],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        timestamp: FieldValue.serverTimestamp()  // Используем FieldValue
     }).then(() => {
         console.log("Post added!");
         input.value = "";

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -25,6 +25,19 @@
             </div>
         </div>
     </main>
+
+    <!-- Окно входа/регистрации -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <h2>Вход в PartNet</h2>
+        <input type="text" id="username" placeholder="Имя пользователя">
+        <input type="password" id="password" placeholder="Пароль">
+        <button onclick="login()">Войти</button>
+        <button onclick="register()">Регистрация</button>
+        <p id="authMessage"></p>
+    </div>
+</div>
+
 
     <script src="script.js"></script>
 </body>

@@ -14,15 +14,22 @@
     </header>
 
     <main>
-        <div class="post-box">
-            <textarea id="postInput" placeholder="О чём думаешь?"></textarea>
-            <button class="post-btn" onclick="addPost()">➤ Опубликовать</button>
-        </div>
+        <div class="container">
+            <div class="post-box">
+                <textarea id="postInput" placeholder="О чём думаешь?" maxlength="200"></textarea>
+                <button class="post-btn" onclick="addPost()">➤ Опубликовать</button>
+            </div>
 
-        <div id="posts">
-            <!-- Здесь будут посты -->
+            <div id="posts">
+                <!-- Посты появятся тут -->
+            </div>
         </div>
     </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
 
     <script src="script.js"></script>
 </body>

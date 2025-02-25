@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PartNet - Соцсеть будущего</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Подключаем Firebase через CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
 </head>
 <body>
 
@@ -38,7 +43,7 @@
         </div>
     </div>
 
-    <script type="module" src="script.js"></script> <!-- Убедись, что здесь type="module" -->
+    <!-- Сценарий -->
+    <script type="module" src="script.js"></script>
 </body>
 </html>
-

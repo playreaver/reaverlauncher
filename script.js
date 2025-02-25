@@ -14,7 +14,7 @@ function addPost() {
         text: text,
         likes: 0,
         comments: [],
-        timestamp: FieldValue.serverTimestamp()
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
         console.log("Post added!");
         input.value = "";
@@ -22,6 +22,7 @@ function addPost() {
         console.error("Error adding post: ", error);
     });
 }
+
 
 
 // Функция регистрации с использованием Firebase

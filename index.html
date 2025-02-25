@@ -39,7 +39,7 @@
                 }
 
                 const data = await response.json();
-                chatLog.innerHTML += `<div><strong>DeepSeek:</strong> ${data.message}</div>`;
+                chatLog.innerHTML += `<div><strong>DeepSeek:</strong> ${data.choices[0].text}</div>`;
             } catch (error) {
                 console.error('Error:', error);
                 chatLog.innerHTML += `<div><strong>Error:</strong> ${error.message}</div>`;

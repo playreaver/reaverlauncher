@@ -13,6 +13,12 @@ function addPost() {
     newPost.innerHTML = `<p>${text}</p>`;
 
     postsDiv.prepend(newPost);
+    
+    // Добавляем анимацию появления
+    setTimeout(() => {
+        newPost.classList.add("show");
+    }, 50);
+
     input.value = "";
 }
 

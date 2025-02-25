@@ -1,5 +1,6 @@
-import { auth, db, registerUser, loginUser } from './src/firebase.js'; // Импортируем функции и объекты из firebase.js
+import { auth, db, registerUser, loginUser } from './src/firebase.js'; // Убедись, что импортируешь все нужные функции
 
+// Функция добавления поста
 function addPost() {
     let input = document.getElementById("postInput");
     let text = input.value.trim();
@@ -22,8 +23,6 @@ function addPost() {
         console.error("Error adding post: ", error);
     });
 }
-
-
 
 // Функция регистрации с использованием Firebase
 function register() {
@@ -81,4 +80,3 @@ function toggleLogin() {
 function closeModal() {
     document.getElementById("authModal").style.display = "none";
 }
-

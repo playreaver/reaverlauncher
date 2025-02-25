@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
-// Firebase конфигурация
 const firebaseConfig = {
   apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
   authDomain: "reaversocial.firebaseapp.com",
@@ -15,6 +15,7 @@ const firebaseConfig = {
 // Инициализация Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // Функция регистрации
 export const registerUser = async (email, password) => {
@@ -40,4 +41,4 @@ export const loginUser = async (email, password) => {
   }
 };
 
-export { auth };
+export { auth, db };

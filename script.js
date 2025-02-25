@@ -11,11 +11,11 @@ function addPost() {
     let newPost = document.createElement("div");
     newPost.classList.add("post");
     newPost.innerHTML = `<p>${text}</p>`;
-    
+
     postsDiv.prepend(newPost);
     input.value = "";
 }
 
 function toggleLogin() {
-    alert("Функция входа пока не реализована!");
+    alert("Вход скоро появится!");
 }

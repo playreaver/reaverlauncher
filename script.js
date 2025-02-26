@@ -63,7 +63,12 @@ function loadPosts() {
                         <p>${post.text}</p>
                         <small>Дата: ${timestamp}</small>
                     `;
-                    postsContainer.prepend(postElement);  // Добавляем новый пост в начало
+
+                    // Проверяем, есть ли уже пост с таким ID в DOM
+                    const existingPost = document.getElementById(change.doc.id);
+                    if (!existingPost) {
+                        postsContainer.prepend(postElement);  // Добавляем новый пост в начало
+                    }
                 }
 
                 if (change.type === "removed") {

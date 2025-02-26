@@ -49,6 +49,21 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
+.like-btn {
+    background-color: #4CAF50; /* Зеленый */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.like-btn:hover {
+    background-color: #45a049;
+}
+
+
 /* Контейнер для центрирования */
 .container {
     max-width: 600px;

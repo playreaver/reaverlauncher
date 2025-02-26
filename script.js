@@ -1,96 +1,49 @@
-// Инициализация Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
-    authDomain: "reaversocial.firebaseapp.com",
-    projectId: "reaversocial",
-    storageBucket: "reaversocial.firebasestorage.app",
-    messagingSenderId: "461982892032",
-    appId: "1:461982892032:web:5327c7e66a4ddddff1d8e5",
-    measurementId: "G-CD344TGD2D"
-};
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PartNet - Соцсеть будущего</title>
+    <link rel="stylesheet" href="style.css">
 
-// Инициализация Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+    <!-- Подключаем Firebase через CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+</head>
+<body>
 
-// Функция добавления поста
-function addPost() {
-    let input = document.getElementById("postInput");
-    let text = input.value.trim();
+    <header>
+        <h1>PartNet</h1>
+        <button class="login-btn" onclick="toggleLogin()">Войти</button>
+    </header>
 
-    if (text === "") {
-        alert("Пост не может быть пустым!");
-        return;
-    }
+    <main>
+        <div class="container">
+            <div class="post-box">
+                <textarea id="postInput" placeholder="О чём думаешь?" maxlength="200"></textarea>
+                <button class="post-btn" onclick="addPost()">➤ Опубликовать</button>
+            </div>
 
-    // Добавляем новый пост в Firebase
-    db.collection("posts").add({
-        text: text,
-        likes: 0,
-        comments: [],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        console.log("Post added!");
-        input.value = "";
-    }).catch(error => {
-        console.error("Error adding post: ", error);
-    });
-}
+            <div id="posts">
+                <!-- Посты появятся тут -->
+            </div>
+        </div>
+    </main>
 
-// Функция регистрации с использованием Firebase
-function register() {
-    let email = document.getElementById("username").value.trim(); // Используем email для регистрации
-    let password = document.getElementById("password").value.trim();
+    <!-- Окно входа/регистрации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>Вход в PartNet</h2>
+            <input type="text" id="username" placeholder="Email">
+            <input type="password" id="password" placeholder="Пароль">
+            <button onclick="login()">Войти</button>
+            <button onclick="register()">Регистрация</button>
+            <p id="authMessage"></p>
+        </div>
+    </div>
 
-    if (!email || !password) {
-        showMessage("Заполните все поля!", "red");
-        return;
-    }
-
-    // Регистрация через Firebase
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            showMessage("Регистрация успешна!", "green");
-            closeModal();
-        })
-        .catch(error => {
-            showMessage(error.message, "red");
-        });
-}
-
-// Функция входа с использованием Firebase
-function login() {
-    let email = document.getElementById("username").value.trim();
-    let password = document.getElementById("password").value.trim();
-
-    if (!email || !password) {
-        showMessage("Заполните все поля!", "red");
-        return;
-    }
-
-    // Вход через Firebase
-    firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => {
-            showMessage(`Добро пожаловать, ${email}!`, "green");
-            closeModal();
-            document.querySelector(".login-btn").innerText = email; // Меняем кнопку на email
-        })
-        .catch(error => {
-            showMessage(error.message, "red");
-        });
-}
-
-function showMessage(text, color) {
-    let msg = document.getElementById("authMessage");
-    msg.innerText = text;
-    msg.style.color = color;
-}
-
-function toggleLogin() {
-    document.getElementById("authModal").style.display = "flex";
-}
-
-function closeModal() {
-    document.getElementById("authModal").style.display = "none";
-}
+    <!-- Подключаем основной скрипт -->
+    <script src="script.js"></script>
+</body>
+</html>

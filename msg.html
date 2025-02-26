@@ -20,11 +20,14 @@
 
     <main>
         <div class="container">
+            <!-- Контейнер для сообщений -->
             <div id="messagesContainer">
                 <!-- Сообщения будут отображаться здесь -->
             </div>
 
+            <!-- Форма для ввода нового сообщения -->
             <div class="message-box">
+                <input type="email" id="receiverEmail" placeholder="Email получателя" required>
                 <textarea id="messageInput" placeholder="Напишите сообщение..." maxlength="500"></textarea>
                 <button class="send-btn" onclick="sendMessage()">Отправить</button>
             </div>
@@ -46,3 +49,4 @@
     <script src="messages.js"></script>
 </body>
 </html>
+

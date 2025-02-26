@@ -61,13 +61,13 @@ function register() {
 function loadPosts() {
     db.collection("posts")
         .orderBy("timestamp", "desc")  // Сортировка по времени
-        .onSnapshot(function(snapshot) {  // Теперь snapshot передается как аргумент
+        .onSnapshot(function(snapshot) {  // snapshot теперь передается как аргумент
             const postsContainer = document.getElementById("posts");
             postsContainer.innerHTML = "";  // Очищаем контейнер перед загрузкой новых данных
 
             snapshot.forEach(function(doc) {
                 const post = doc.data();
-                
+
                 // Проверяем наличие поля timestamp
                 const timestamp = post.timestamp ? new Date(post.timestamp.seconds * 1000).toLocaleString() : "Неизвестная дата";
                 
@@ -79,11 +79,13 @@ function loadPosts() {
                 `;
                 postsContainer.appendChild(postElement);
             });
+        }, function(error) {
+            console.error("Ошибка при загрузке постов: ", error);
         });
 }
 
-// Вызов функции для загрузки постов
-loadPosts();
+// Вызов функции для загрузки постов при инициализации страницы
+window.onload = loadPosts;  // Обеспечим, что посты загружаются при загрузке страницы
 
 // Функция входа
 function login() {

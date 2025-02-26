@@ -57,6 +57,27 @@ function register() {
         });
 }
 
+function loadPosts() {
+    db.collection("posts")
+        .orderBy("timestamp", "desc")  // Сортировка по времени
+        .onSnapshot((snapshot) => {
+            const postsContainer = document.getElementById("posts");
+            postsContainer.innerHTML = "";  // Очищаем контейнер перед загрузкой новых данных
+
+            snapshot.forEach((doc) => {
+                const post = doc.data();
+                const postElement = document.createElement("div");
+                postElement.classList.add("post");
+                postElement.innerHTML = `
+                    <p>${post.text}</p>
+                    <small>Дата: ${new Date(post.timestamp.seconds * 1000).toLocaleString()}</small>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        });
+}
+
+
 // Функция входа
 function login() {
     var email = document.getElementById("username").value.trim();
@@ -78,6 +99,7 @@ function login() {
         });
 }
 
+window.onload = loadPosts;
 // Функция отображения сообщений
 function showMessage(text, color) {
     var msg = document.getElementById("authMessage");

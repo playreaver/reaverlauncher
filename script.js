@@ -12,6 +12,8 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
+loadPosts();
+
 // Функция добавления поста с локальной меткой времени
 function addPost() {
     var input = document.getElementById("postInput");

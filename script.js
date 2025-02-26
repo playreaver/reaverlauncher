@@ -1,49 +1,96 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PartNet - Соцсеть будущего</title>
-    <link rel="stylesheet" href="style.css">
+// Инициализация Firebase
+var firebaseConfig = {
+    apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
+    authDomain: "reaversocial.firebaseapp.com",
+    projectId: "reaversocial",
+    storageBucket: "reaversocial.firebasestorage.app",
+    messagingSenderId: "461982892032",
+    appId: "1:461982892032:web:5327c7e66a4ddddff1d8e5",
+    measurementId: "G-CD344TGD2D"
+};
 
-    <!-- Подключаем Firebase через CDN -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
-</head>
-<body>
+// Подключаем Firebase
+firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.firestore();
 
-    <header>
-        <h1>PartNet</h1>
-        <button class="login-btn" onclick="toggleLogin()">Войти</button>
-    </header>
+// Функция добавления поста
+function addPost() {
+    var input = document.getElementById("postInput");
+    var text = input.value.trim();
 
-    <main>
-        <div class="container">
-            <div class="post-box">
-                <textarea id="postInput" placeholder="О чём думаешь?" maxlength="200"></textarea>
-                <button class="post-btn" onclick="addPost()">➤ Опубликовать</button>
-            </div>
+    if (text === "") {
+        alert("Пост не может быть пустым!");
+        return;
+    }
 
-            <div id="posts">
-                <!-- Посты появятся тут -->
-            </div>
-        </div>
-    </main>
+    db.collection("posts").add({
+        text: text,
+        likes: 0,
+        comments: [],
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log("Пост добавлен!");
+        input.value = "";
+    }).catch(error => {
+        console.error("Ошибка добавления поста: ", error);
+    });
+}
 
-    <!-- Окно входа/регистрации -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <h2>Вход в PartNet</h2>
-            <input type="text" id="username" placeholder="Email">
-            <input type="password" id="password" placeholder="Пароль">
-            <button onclick="login()">Войти</button>
-            <button onclick="register()">Регистрация</button>
-            <p id="authMessage"></p>
-        </div>
-    </div>
+// Функция регистрации
+function register() {
+    var email = document.getElementById("username").value.trim();
+    var password = document.getElementById("password").value.trim();
 
-    <!-- Подключаем основной скрипт -->
-    <script src="script.js"></script>
-</body>
-</html>
+    if (!email || !password) {
+        showMessage("Заполните все поля!", "red");
+        return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+            showMessage("Регистрация успешна!", "green");
+            closeModal();
+        })
+        .catch(error => {
+            showMessage(error.message, "red");
+        });
+}
+
+// Функция входа
+function login() {
+    var email = document.getElementById("username").value.trim();
+    var password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+        showMessage("Заполните все поля!", "red");
+        return;
+    }
+
+    auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+            showMessage(`Добро пожаловать, ${email}!`, "green");
+            closeModal();
+            document.querySelector(".login-btn").innerText = email;
+        })
+        .catch(error => {
+            showMessage(error.message, "red");
+        });
+}
+
+// Функция отображения сообщений
+function showMessage(text, color) {
+    var msg = document.getElementById("authMessage");
+    msg.innerText = text;
+    msg.style.color = color;
+}
+
+// Открытие окна входа
+function toggleLogin() {
+    document.getElementById("authModal").style.display = "flex";
+}
+
+// Закрытие окна входа
+function closeModal() {
+    document.getElementById("authModal").style.display = "none";
+}

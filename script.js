@@ -82,7 +82,8 @@ function loadPosts() {
         });
 }
 
-
+// Вызов функции для загрузки постов
+loadPosts();
 
 // Функция входа
 function login() {

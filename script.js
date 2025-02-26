@@ -22,7 +22,7 @@ function addPost() {
     }
     db.collection("posts").add({
         text: text,
-        likes: 0,
+        likes: 0, // Начальное количество лайков
         comments: [],
         timestamp: firebase.firestore.FieldValue.serverTimestamp() // Используем только serverTimestamp
     }).then(() => {
@@ -61,6 +61,9 @@ function loadPosts() {
                 postElement.innerHTML = `
                     <p>${post.text}</p>
                     <small>Дата: ${timestamp}</small>
+                    <div>
+                        <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>
+                    </div>
                 `;
 
                 postsContainer.appendChild(postElement);  // Добавляем пост в контейнер
@@ -70,6 +73,28 @@ function loadPosts() {
             postsContainer.innerHTML = "<p>Ошибка загрузки постов.</p>";
         });
 }
+
+// Функция для добавления лайка
+function likePost(postId) {
+    const postRef = db.collection("posts").doc(postId);
+
+    postRef.get().then(doc => {
+        if (doc.exists) {
+            const postData = doc.data();
+            const newLikes = postData.likes + 1;
+
+            // Обновляем количество лайков
+            postRef.update({
+                likes: newLikes
+            }).then(() => {
+                console.log("Лайк добавлен!");
+            }).catch(error => {
+                console.error("Ошибка при добавлении лайка: ", error);
+            });
+        }
+    });
+}
+
 
 // Загрузка постов при загрузке страницы
 window.onload = function() {

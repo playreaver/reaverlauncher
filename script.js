@@ -37,33 +37,20 @@ function addPost() {
     });
 }
 
-// Функция регистрации
-function register() {
-    var email = document.getElementById("username").value.trim();
-    var password = document.getElementById("password").value.trim();
-
-    if (!email || !password) {
-        showMessage("Заполните все поля!", "red");
-        return;
-    }
-
-    auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            showMessage("Регистрация успешна!", "green");
-            closeModal();
-        })
-        .catch(error => {
-            showMessage(error.message, "red");
-        });
-}
-
 // Функция для отображения постов
 function loadPosts() {
+    const postsContainer = document.getElementById("posts");
+    postsContainer.innerHTML = "";  // Очищаем контейнер перед загрузкой новых данных
+
     db.collection("posts")
         .orderBy("timestamp", "desc")  // Сортировка по времени
-        .onSnapshot(function(snapshot) {  // snapshot теперь передается как аргумент
-            const postsContainer = document.getElementById("posts");
-            postsContainer.innerHTML = "";  // Очищаем контейнер перед загрузкой новых данных
+        .onSnapshot(function(snapshot) {
+            console.log("Загружаю посты...");
+
+            if (snapshot.empty) {
+                console.log("Нет постов в базе данных.");
+                return;
+            }
 
             snapshot.forEach(function(doc) {
                 const post = doc.data();
@@ -85,7 +72,9 @@ function loadPosts() {
 }
 
 // Вызов функции для загрузки постов при инициализации страницы
-window.onload = loadPosts;  // Обеспечим, что посты загружаются при загрузке страницы
+window.onload = function() {
+    loadPosts(); // Загружаем посты только один раз при загрузке страницы
+}
 
 // Функция входа
 function login() {
@@ -108,7 +97,6 @@ function login() {
         });
 }
 
-window.onload = loadPosts;
 // Функция отображения сообщений
 function showMessage(text, color) {
     var msg = document.getElementById("authMessage");

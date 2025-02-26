@@ -38,6 +38,7 @@ function addPost() {
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
     postsContainer.innerHTML = "";  // Очищаем контейнер перед загрузкой данных
+
     db.collection("posts")
         .orderBy("localTimestamp", "desc")  // Сортировка по локальной метке времени
         .onSnapshot(function(snapshot) {
@@ -46,20 +47,25 @@ function loadPosts() {
                 postsContainer.innerHTML = "<p>Нет постов в базе данных.</p>";
                 return;
             }
-            postsContainer.innerHTML = "";
-            snapshot.forEach(function(doc) {
-                const post = doc.data();
-                // Если серверный timestamp уже установлен, используем его для отображения, иначе - локальное время
-                const timestamp = (post.timestamp && post.timestamp.seconds)
-                    ? new Date(post.timestamp.seconds * 1000).toLocaleString()
-                    : new Date(post.localTimestamp).toLocaleString();
-                const postElement = document.createElement("div");
-                postElement.classList.add("post");
-                postElement.innerHTML = `
-                    <p>${post.text}</p>
-                    <small>Дата: ${timestamp}</small>
-                `;
-                postsContainer.appendChild(postElement);
+
+            snapshot.docChanges().forEach(function(change) {
+                if (change.type === "added") {
+                    const post = change.doc.data();
+                    const postElement = document.createElement("div");
+                    postElement.classList.add("post");
+                    const timestamp = (post.timestamp && post.timestamp.seconds)
+                        ? new Date(post.timestamp.seconds * 1000).toLocaleString()
+                        : new Date(post.localTimestamp).toLocaleString();
+                    postElement.innerHTML = `
+                        <p>${post.text}</p>
+                        <small>Дата: ${timestamp}</small>
+                    `;
+                    postsContainer.prepend(postElement);  // Добавляем новый пост в начало
+                }
+                if (change.type === "removed") {
+                    const postElement = document.getElementById(change.doc.id);
+                    if (postElement) postElement.remove();  // Удаляем пост, если он был удалён
+                }
             });
         }, function(error) {
             console.error("Ошибка при загрузке постов: ", error);

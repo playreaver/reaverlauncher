@@ -8,27 +8,24 @@ var firebaseConfig = {
     appId: "1:461982892032:web:5327c7e66a4ddddff1d8e5",
     measurementId: "G-CD344TGD2D"
 };
-
-// Подключаем Firebase
 firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-// Функция добавления поста
+// Функция добавления поста с локальной меткой времени
 function addPost() {
     var input = document.getElementById("postInput");
     var text = input.value.trim();
-
     if (text === "") {
         alert("Пост не может быть пустым!");
         return;
     }
-
     db.collection("posts").add({
         text: text,
         likes: 0,
         comments: [],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        localTimestamp: new Date().getTime() // локальная метка времени для сортировки
     }).then(() => {
         console.log("Пост добавлен!");
         input.value = "";
@@ -37,27 +34,25 @@ function addPost() {
     });
 }
 
-// Функция для отображения постов
+// Функция для отображения постов, сортируем по localTimestamp
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
-    postsContainer.innerHTML = "";  // Очищаем контейнер перед загрузкой новых данных
-
+    postsContainer.innerHTML = "";  // Очищаем контейнер перед загрузкой данных
     db.collection("posts")
-        .orderBy("timestamp", "desc")  // Сортировка по времени
-        .onSnapshot(function(snapshot) {  // Используем onSnapshot для обновлений в реальном времени
-            console.log("Загружаю посты...");
-
+        .orderBy("localTimestamp", "desc")  // Сортировка по локальной метке времени
+        .onSnapshot(function(snapshot) {
+            console.log("Загружаю посты... Количество:", snapshot.size);
             if (snapshot.empty) {
-                console.log("Нет постов в базе данных.");
+                postsContainer.innerHTML = "<p>Нет постов в базе данных.</p>";
                 return;
             }
-
+            postsContainer.innerHTML = "";
             snapshot.forEach(function(doc) {
                 const post = doc.data();
-
-                // Проверяем наличие поля timestamp
-                const timestamp = post.timestamp ? new Date(post.timestamp.seconds * 1000).toLocaleString() : "Неизвестная дата";
-                
+                // Если серверный timestamp уже установлен, используем его для отображения, иначе - локальное время
+                const timestamp = (post.timestamp && post.timestamp.seconds)
+                    ? new Date(post.timestamp.seconds * 1000).toLocaleString()
+                    : new Date(post.localTimestamp).toLocaleString();
                 const postElement = document.createElement("div");
                 postElement.classList.add("post");
                 postElement.innerHTML = `
@@ -71,26 +66,42 @@ function loadPosts() {
         });
 }
 
-// Вызов функции для загрузки постов при инициализации страницы
+// Загрузка постов при загрузке страницы
 window.onload = function() {
-    loadPosts(); // Загружаем посты только один раз при загрузке страницы
-}
+    loadPosts();
+};
 
 // Функция входа
 function login() {
     var email = document.getElementById("username").value.trim();
     var password = document.getElementById("password").value.trim();
-
     if (!email || !password) {
         showMessage("Заполните все поля!", "red");
         return;
     }
-
     auth.signInWithEmailAndPassword(email, password)
         .then(() => {
             showMessage(`Добро пожаловать, ${email}!`, "green");
             closeModal();
             document.querySelector(".login-btn").innerText = email;
+        })
+        .catch(error => {
+            showMessage(error.message, "red");
+        });
+}
+
+// Функция регистрации
+function register() {
+    var email = document.getElementById("username").value.trim();
+    var password = document.getElementById("password").value.trim();
+    if (!email || !password) {
+        showMessage("Заполните все поля!", "red");
+        return;
+    }
+    auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+            showMessage("Регистрация успешна!", "green");
+            closeModal();
         })
         .catch(error => {
             showMessage(error.message, "red");

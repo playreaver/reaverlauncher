@@ -1,6 +1,6 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
@@ -21,11 +21,10 @@ const db = getFirestore(app);
 export const registerUser = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    console.log('Регистрация успешна:', user);
+    console.log("✅ Регистрация успешна:", userCredential.user);
   } catch (error) {
-    console.error('Ошибка регистрации:', error.message);
-    throw new Error(error.message); // Выкидываем ошибку, чтобы её можно было поймать в .catch
+    console.error("❌ Ошибка регистрации:", error.message);
+    throw new Error(error.message);
   }
 };
 
@@ -33,12 +32,12 @@ export const registerUser = async (email, password) => {
 export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    console.log('Вход успешен:', user);
+    console.log("✅ Вход успешен:", userCredential.user);
   } catch (error) {
-    console.error('Ошибка входа:', error.message);
+    console.error("❌ Ошибка входа:", error.message);
     throw new Error(error.message);
   }
 };
 
-export { auth, db };
+// Экспортируем всё нужное для работы с Firestore
+export { auth, db, collection, addDoc, serverTimestamp };

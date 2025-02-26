@@ -57,6 +57,7 @@ function register() {
         });
 }
 
+// Функция для отображения постов
 function loadPosts() {
     db.collection("posts")
         .orderBy("timestamp", "desc")  // Сортировка по времени
@@ -66,16 +67,21 @@ function loadPosts() {
 
             snapshot.forEach((doc) => {
                 const post = doc.data();
+                
+                // Проверяем наличие поля timestamp
+                const timestamp = post.timestamp ? new Date(post.timestamp.seconds * 1000).toLocaleString() : "Неизвестная дата";
+                
                 const postElement = document.createElement("div");
                 postElement.classList.add("post");
                 postElement.innerHTML = `
                     <p>${post.text}</p>
-                    <small>Дата: ${new Date(post.timestamp.seconds * 1000).toLocaleString()}</small>
+                    <small>Дата: ${timestamp}</small>
                 `;
                 postsContainer.appendChild(postElement);
             });
         });
 }
+
 
 
 // Функция входа
@@ -116,3 +122,5 @@ function toggleLogin() {
 function closeModal() {
     document.getElementById("authModal").style.display = "none";
 }
+
+console.log(snapshot);

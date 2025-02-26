@@ -12,9 +12,7 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-loadPosts();
-
-// Функция добавления поста с локальной меткой времени
+// Функция добавления поста
 function addPost() {
     var input = document.getElementById("postInput");
     var text = input.value.trim();
@@ -26,8 +24,7 @@ function addPost() {
         text: text,
         likes: 0,
         comments: [],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        localTimestamp: new Date().getTime() // локальная метка времени для сортировки
+        timestamp: firebase.firestore.FieldValue.serverTimestamp() // Используем только serverTimestamp
     }).then(() => {
         console.log("Пост добавлен!");
         input.value = "";
@@ -39,47 +36,38 @@ function addPost() {
 // Функция для отображения постов
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
+    postsContainer.innerHTML = "<p>Загрузка постов...</p>"; // Индикатор загрузки
 
     db.collection("posts")
-        .orderBy("localTimestamp", "desc")  // Сортировка по локальной метке времени
+        .orderBy("timestamp", "desc")  // Сортировка по serverTimestamp
         .onSnapshot(function(snapshot) {
-            console.log("Загружаю посты... Количество:", snapshot.size);
+            postsContainer.innerHTML = ""; // Очищаем контейнер после загрузки
 
             if (snapshot.empty) {
                 postsContainer.innerHTML = "<p>Нет постов в базе данных.</p>";
                 return;
             }
 
-            snapshot.docChanges().forEach(function(change) {
-                if (change.type === "added") {
-                    const post = change.doc.data();
-                    const postElement = document.createElement("div");
-                    postElement.classList.add("post");
-                    postElement.id = change.doc.id;  // Присваиваем id для корректного удаления
+            snapshot.forEach(function(doc) {
+                const post = doc.data();
+                const postElement = document.createElement("div");
+                postElement.classList.add("post");
+                postElement.id = doc.id;  // Присваиваем id для корректного удаления
 
-                    const timestamp = (post.timestamp && post.timestamp.seconds)
-                        ? new Date(post.timestamp.seconds * 1000).toLocaleString()
-                        : new Date(post.localTimestamp).toLocaleString();
+                const timestamp = (post.timestamp && post.timestamp.seconds)
+                    ? new Date(post.timestamp.seconds * 1000).toLocaleString()
+                    : new Date().toLocaleString(); // Fallback на локальное время
 
-                    postElement.innerHTML = `
-                        <p>${post.text}</p>
-                        <small>Дата: ${timestamp}</small>
-                    `;
+                postElement.innerHTML = `
+                    <p>${post.text}</p>
+                    <small>Дата: ${timestamp}</small>
+                `;
 
-                    // Проверяем, есть ли уже пост с таким ID в DOM
-                    const existingPost = document.getElementById(change.doc.id);
-                    if (!existingPost) {
-                        postsContainer.prepend(postElement);  // Добавляем новый пост в начало
-                    }
-                }
-
-                if (change.type === "removed") {
-                    const postElement = document.getElementById(change.doc.id);
-                    if (postElement) postElement.remove();  // Удаляем пост, если он был удалён
-                }
+                postsContainer.appendChild(postElement);  // Добавляем пост в контейнер
             });
         }, function(error) {
             console.error("Ошибка при загрузке постов: ", error);
+            postsContainer.innerHTML = "<p>Ошибка загрузки постов.</p>";
         });
 }
 

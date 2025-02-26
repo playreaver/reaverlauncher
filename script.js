@@ -34,15 +34,15 @@ function addPost() {
     });
 }
 
-// Функция для отображения постов, сортируем по localTimestamp
+// Функция для отображения постов
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
-    postsContainer.innerHTML = "";  // Очищаем контейнер перед загрузкой данных
 
     db.collection("posts")
         .orderBy("localTimestamp", "desc")  // Сортировка по локальной метке времени
         .onSnapshot(function(snapshot) {
             console.log("Загружаю посты... Количество:", snapshot.size);
+
             if (snapshot.empty) {
                 postsContainer.innerHTML = "<p>Нет постов в базе данных.</p>";
                 return;
@@ -53,15 +53,19 @@ function loadPosts() {
                     const post = change.doc.data();
                     const postElement = document.createElement("div");
                     postElement.classList.add("post");
+                    postElement.id = change.doc.id;  // Присваиваем id для корректного удаления
+
                     const timestamp = (post.timestamp && post.timestamp.seconds)
                         ? new Date(post.timestamp.seconds * 1000).toLocaleString()
                         : new Date(post.localTimestamp).toLocaleString();
+
                     postElement.innerHTML = `
                         <p>${post.text}</p>
                         <small>Дата: ${timestamp}</small>
                     `;
                     postsContainer.prepend(postElement);  // Добавляем новый пост в начало
                 }
+
                 if (change.type === "removed") {
                     const postElement = document.getElementById(change.doc.id);
                     if (postElement) postElement.remove();  // Удаляем пост, если он был удалён

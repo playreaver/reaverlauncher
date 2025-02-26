@@ -32,7 +32,6 @@ function addPost() {
     }).then(() => {
         console.log("Пост добавлен!");
         input.value = "";
-        loadPosts(); // Перезагружаем посты после добавления нового
     }).catch(error => {
         console.error("Ошибка добавления поста: ", error);
     });
@@ -45,8 +44,7 @@ function loadPosts() {
 
     db.collection("posts")
         .orderBy("timestamp", "desc")  // Сортировка по времени
-        .get()  // Используем get() вместо onSnapshot для однократной загрузки данных
-        .then(function(snapshot) {
+        .onSnapshot(function(snapshot) {  // Используем onSnapshot для обновлений в реальном времени
             console.log("Загружаю посты...");
 
             if (snapshot.empty) {
@@ -68,8 +66,7 @@ function loadPosts() {
                 `;
                 postsContainer.appendChild(postElement);
             });
-        })
-        .catch(function(error) {
+        }, function(error) {
             console.error("Ошибка при загрузке постов: ", error);
         });
 }

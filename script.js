@@ -1,4 +1,4 @@
-// Инициализация Firebase
+    // Инициализация Firebase
 var firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
     authDomain: "reaversocial.firebaseapp.com",
@@ -20,6 +20,7 @@ function addPost() {
         alert("Пост не может быть пустым!");
         return;
     }
+    const safeText = escapeHTML(text).replace(/\n/g, "<br>");
     db.collection("posts").add({
         text: text,
         likes: 0, // Начальное количество лайков

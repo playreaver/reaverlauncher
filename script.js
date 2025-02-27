@@ -33,6 +33,12 @@ function addPost() {
     });
 }
 
+const lowxssprotection = (input) => { // Made by @JustDeveloper1 - https://github.com/JustDeveloper1
+    return input.replace(/[^a-zA-Z0-9]/g, function(match) {
+        return `&#${match.charCodeAt(0)};`;
+    });
+}
+
 // Функция для отображения постов
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
@@ -59,7 +65,7 @@ function loadPosts() {
                     : new Date().toLocaleString(); // Fallback на локальное время
 
                 postElement.innerHTML = `
-                    <p>${post.text}</p>
+                    <p>${lowxssprotection(post.text)}</p>
                     <small>Дата: ${timestamp}</small>
                     <div>
                         <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>

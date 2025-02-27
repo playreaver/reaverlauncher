@@ -13,10 +13,6 @@
 </head>
 <body>
 
-    <header>
-        <h1>Element</h1>
-    </header>
-
     <!-- Боковая панель -->
     <aside class="sidebar">
         <button class="sidebar-btn" onclick="window.location.href='profile.html'">Профиль</button>
@@ -25,18 +21,25 @@
         <button class="sidebar-btn login-btn" onclick="toggleLogin()">Войти</button>
     </aside>
 
-    <main>
-        <div class="container">
-            <div class="post-box">
-                <textarea id="postInput" placeholder="О чём думаешь?" maxlength="200"></textarea>
-                <button class="post-btn" onclick="addPost()">➤ Опубликовать</button>
-            </div>
+    <!-- Основной контент -->
+    <div class="main-content">
+        <header>
+            <h1>Element</h1>
+        </header>
 
-            <div id="posts">
-                <!-- Посты появятся тут -->
+        <main>
+            <div class="container">
+                <div class="post-box">
+                    <textarea id="postInput" placeholder="О чём думаешь?" maxlength="200"></textarea>
+                    <button class="post-btn" onclick="addPost()">➤ Опубликовать</button>
+                </div>
+
+                <div id="posts">
+                    <!-- Посты появятся тут -->
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <!-- Окно входа/регистрации -->
     <div id="authModal" class="modal">
@@ -50,9 +53,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
     <script src="script.js"></script>
 </body>
 </html>

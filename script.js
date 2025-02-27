@@ -65,11 +65,15 @@ function loadPosts() {
                     ? new Date(post.timestamp.seconds * 1000).toLocaleString()
                     : new Date().toLocaleString();
 
-                // Преобразуем символы новой строки в <br>
+                // Преобразуем символы новой строки в <br> для форматирования
                 const formattedText = post.text.replace(/\n/g, "<br>");
 
-                postElement.innerHTML = `
-                    <p>${escapeHTML(formattedText)}</p>
+                // Создаем параграф для текста с форматированием
+                const postText = document.createElement("p");
+                postText.innerHTML = formattedText;  // Используем innerHTML для вставки <br> тега
+
+                postElement.appendChild(postText);
+                postElement.innerHTML += `
                     <small>Дата: ${timestamp}</small>
                     <div>
                         <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>

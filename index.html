@@ -15,8 +15,15 @@
 
     <header>
         <h1>Element</h1>
-        <button class="login-btn" onclick="toggleLogin()">Войти</button>
     </header>
+
+    <!-- Боковая панель -->
+    <aside class="sidebar">
+        <button class="sidebar-btn" onclick="window.location.href='profile.html'">Профиль</button>
+        <button class="sidebar-btn" onclick="window.location.href='msg.html'">Сообщения</button>
+        <button class="sidebar-btn" onclick="window.location.href='apps.html'">Приложения</button>
+        <button class="sidebar-btn login-btn" onclick="toggleLogin()">Войти</button>
+    </aside>
 
     <main>
         <div class="container">
@@ -28,15 +35,13 @@
             <div id="posts">
                 <!-- Посты появятся тут -->
             </div>
-            <!-- Добавляем кнопку перехода на вкладку сообщений -->
-            <button class="messages-btn" onclick="window.location.href='msg.html'">Сообщения</button>
         </div>
     </main>
 
     <!-- Окно входа/регистрации -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <h2>Вход в PartNet</h2>
+            <h2>Вход в Element</h2>
             <input type="text" id="username" placeholder="Email">
             <input type="password" id="password" placeholder="Пароль">
             <button onclick="login()">Войти</button>
@@ -45,6 +50,9 @@
         </div>
     </div>
 
+    <script src="script.js"></script>
+</body>
+</html>
     <script src="script.js"></script>
 </body>
 </html>

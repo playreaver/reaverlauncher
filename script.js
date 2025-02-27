@@ -41,13 +41,14 @@ function addPost() {
     });
 }
 
+// Функция для загрузки постов
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
     postsContainer.innerHTML = "<p>Загрузка постов...</p>";
 
     db.collection("posts")
         .orderBy("timestamp", "desc")
-        .onSnapshot(function(snapshot) {
+        .onSnapshot(snapshot => {
             postsContainer.innerHTML = "";
 
             if (snapshot.empty) {
@@ -55,22 +56,19 @@ function loadPosts() {
                 return;
             }
 
-            snapshot.forEach(function(doc) {
+            snapshot.forEach(doc => {
                 const post = doc.data();
                 const postElement = document.createElement("div");
                 postElement.classList.add("post");
                 postElement.id = doc.id;
 
-                const timestamp = (post.timestamp && post.timestamp.seconds)
+                const timestamp = post.timestamp?.seconds
                     ? new Date(post.timestamp.seconds * 1000).toLocaleString()
                     : new Date().toLocaleString();
 
-                // Преобразуем символы новой строки в <br> для форматирования
-                const formattedText = post.text.replace(/\n/g, "<br>");
-
-                // Создаем параграф для текста с форматированием
+                // Вставляем текст поста безопасно, без выполнения HTML
                 const postText = document.createElement("p");
-                postText.innerHTML = formattedText;  // Используем innerHTML для вставки <br> тега
+                postText.textContent = post.text.replace(/<br>/g, "\n");
 
                 postElement.appendChild(postText);
                 postElement.innerHTML += `
@@ -82,7 +80,7 @@ function loadPosts() {
 
                 postsContainer.appendChild(postElement);
             });
-        }, function(error) {
+        }, error => {
             console.error("Ошибка при загрузке постов: ", error);
             postsContainer.innerHTML = "<p>Ошибка загрузки постов.</p>";
         });
@@ -104,6 +102,7 @@ function likePost(postId) {
 
 // Загрузка постов при загрузке страницы
 window.onload = loadPosts;
+
 
 // Функция входа
 function login() {

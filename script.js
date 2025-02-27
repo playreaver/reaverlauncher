@@ -12,28 +12,7 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-// Корректная защита от XSS
-function escapeHTML(str) {
-    return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;")
-        .replace(/\n/g, "&#10;"); // Кодируем перенос строки
-}
-
-// Декодер HTML-сущностей (для отображения в браузере)
-function decodeHTML(str) {
-    return str
-        .replace(/&#10;/g, "<br>")
-        .replace(/&amp;/g, "&")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">")
-        .replace(/&quot;/g, '"')
-        .replace(/&#039;/g, "'");
-}
-
+// Функция для добавления поста
 function addPost() {
     var input = document.getElementById("postInput");
     var text = input.value.trim();
@@ -43,10 +22,14 @@ function addPost() {
         return;
     }
 
-    const safeText = escapeHTML(text);
+    // Защищаем от XSS
+    const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&/g, "&amp;");
+
+    // Заменяем переносы строк на <br>
+    const formattedText = safeText.replace(/\n/g, "<br>");
 
     db.collection("posts").add({
-        text: safeText,
+        text: formattedText,
         likes: 0,
         comments: [],
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -58,6 +41,7 @@ function addPost() {
     });
 }
 
+// Функция для загрузки постов
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
     postsContainer.innerHTML = "<p>Загрузка постов...</p>";
@@ -82,8 +66,9 @@ function loadPosts() {
                     ? new Date(post.timestamp.seconds * 1000).toLocaleString()
                     : new Date().toLocaleString();
 
+                // Вставляем текст поста, заменяя <br> на фактические переносы строк
                 postElement.innerHTML = `
-                    <p>${decodeHTML(post.text)}</p>
+                    <p>${post.text.replace(/<br>/g, "\n")}</p>
                     <small>Дата: ${timestamp}</small>
                     <div>
                         <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>

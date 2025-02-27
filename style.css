@@ -9,6 +9,35 @@ body {
     line-height: 1.6;
 }
 
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 200px;
+    height: 100%;
+    background: #161b22;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    box-shadow: 2px 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-btn {
+    background: none;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    padding-left: 20px;
+    transition: 0.3s;
+}
+
+.sidebar-btn:hover {
+    background: #21262d;
+}
+
 /* Модальное окно */
 .modal {
     display: none;

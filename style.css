@@ -124,6 +124,12 @@ textarea:focus {
     font-size: 18px;
     margin: 0;
     color: #fff;
+    white-space: pre-line;
+}
+
+.post-btn:active, .login-btn:active, .register-btn:active {
+    transform: scale(0.98); /* Лёгкое уменьшение при нажатии */
+    transition: transform 0.1s;
 }
 
 .login-btn,
@@ -169,6 +175,12 @@ textarea:focus {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
+.modal-content h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #00bfff;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 60px;
@@ -179,6 +191,10 @@ textarea:focus {
         text-align: center;
         padding: 10px;
         font-size: 14px;
+    }
+
+    .post p {
+        font-size: 16px;
     }
 
     .main-content {

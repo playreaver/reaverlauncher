@@ -66,9 +66,12 @@ function loadPosts() {
                     ? new Date(post.timestamp.seconds * 1000).toLocaleString()
                     : new Date().toLocaleString();
 
-                // Вставляем текст поста, заменяя <br> на фактические переносы строк
-                postElement.innerHTML = `
-                    <p>${post.text.replace(/<br>/g, "\n")}</p>
+                // Вставляем текст поста безопасно, без выполнения HTML
+                const postText = document.createElement("p");
+                postText.textContent = post.text.replace(/<br>/g, "\n");
+
+                postElement.appendChild(postText);
+                postElement.innerHTML += `
                     <small>Дата: ${timestamp}</small>
                     <div>
                         <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>

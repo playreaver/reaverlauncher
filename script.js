@@ -12,27 +12,19 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-function escapeHTML(str) {
-    return str.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-}
-
+// Функция добавления поста
 function addPost() {
     var input = document.getElementById("postInput");
     var text = input.value.trim();
-
     if (text === "") {
         alert("Пост не может быть пустым!");
         return;
     }
-
-    const safeText = escapeHTML(text);
-
     db.collection("posts").add({
-        text: safeText,
-        likes: 0,
+        text: text,
+        likes: 0, // Начальное количество лайков
         comments: [],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        timestamp: firebase.firestore.FieldValue.serverTimestamp() // Используем только serverTimestamp
     }).then(() => {
         console.log("Пост добавлен!");
         input.value = "";
@@ -41,17 +33,24 @@ function addPost() {
     });
 }
 
+const lowxssprotection = (input) => { // Made by @JustDeveloper1 - https://github.com/JustDeveloper1
+    return input.replace(/[^a-zA-Z0-9]/g, function(match) {
+        return `&#${match.charCodeAt(0)};`;
+    });
+}
+
+// Функция для отображения постов
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
-    postsContainer.innerHTML = "<p>Загрузка постов...</p>";
+    postsContainer.innerHTML = "<p>Загрузка постов...</p>"; // Индикатор загрузки
 
     db.collection("posts")
-        .orderBy("timestamp", "desc")
+        .orderBy("timestamp", "desc")  // Сортировка по serverTimestamp
         .onSnapshot(function(snapshot) {
-            postsContainer.innerHTML = "";
+            postsContainer.innerHTML = ""; // Очищаем контейнер после загрузки
 
             if (snapshot.empty) {
-                postsContainer.innerHTML = "<p>Нет постов.</p>";
+                postsContainer.innerHTML = "<p>Нет постов в базе данных.</p>";
                 return;
             }
 
@@ -59,34 +58,29 @@ function loadPosts() {
                 const post = doc.data();
                 const postElement = document.createElement("div");
                 postElement.classList.add("post");
-                postElement.id = doc.id;
+                postElement.id = doc.id;  // Присваиваем id для корректного удаления
 
-                const timestamp = post.timestamp?.seconds
+                const timestamp = (post.timestamp && post.timestamp.seconds)
                     ? new Date(post.timestamp.seconds * 1000).toLocaleString()
-                    : new Date().toLocaleString();
+                    : new Date().toLocaleString(); // Fallback на локальное время
 
-                const textPara = document.createElement("p");
-                textPara.textContent = post.text;
+                postElement.innerHTML = `
+                    <p>${lowxssprotection(post.text)}</p>
+                    <small>Дата: ${timestamp}</small>
+                    <div>
+                        <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>
+                    </div>
+                `;
 
-                const smallDate = document.createElement("small");
-                smallDate.textContent = `Дата: ${timestamp}`;
-
-                const likeButton = document.createElement("button");
-                likeButton.classList.add("like-btn");
-                likeButton.textContent = `👍 Лайк (${post.likes})`;
-                likeButton.onclick = () => likePost(doc.id);
-
-                postElement.appendChild(textPara);
-                postElement.appendChild(smallDate);
-                postElement.appendChild(likeButton);
-                postsContainer.appendChild(postElement);
+                postsContainer.appendChild(postElement);  // Добавляем пост в контейнер
             });
         }, function(error) {
             console.error("Ошибка при загрузке постов: ", error);
-            postsContainer.innerHTML = "<p>Ошибка загрузки.</p>";
+            postsContainer.innerHTML = "<p>Ошибка загрузки постов.</p>";
         });
 }
 
+// Функция для добавления лайка
 function likePost(postId) {
     const postRef = db.collection("posts").doc(postId);
 
@@ -95,6 +89,7 @@ function likePost(postId) {
             const postData = doc.data();
             const newLikes = postData.likes + 1;
 
+            // Обновляем количество лайков
             postRef.update({
                 likes: newLikes
             }).then(() => {
@@ -107,6 +102,7 @@ function likePost(postId) {
 }
 
 
+// Загрузка постов при загрузке страницы
 window.onload = function() {
     loadPosts();
 };

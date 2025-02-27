@@ -163,8 +163,8 @@ textarea::placeholder {
     transition: transform 0.1s;
 }
 
-.login-btn,
-.register-btn {
+
+.login-btn, .register-btn {
     background: #00bfff;
     color: white;
     font-weight: bold;
@@ -178,10 +178,14 @@ textarea::placeholder {
     margin-top: 10px;
 }
 
-.login-btn:hover,
-.register-btn:hover {
+.login-btn:hover, .register-btn:hover {
     background: #0088cc;
     transform: scale(1.02);
+}
+
+.login-btn:active, .register-btn:active {
+    background: #0077b3;
+    transform: scale(0.98);
 }
 
 .modal {
@@ -204,6 +208,36 @@ textarea::placeholder {
     width: 350px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+input[type="text"], input[type="password"] {
+    width: 90%; 
+    max-width: 300px; 
+    padding: 12px; 
+    border-radius: 8px; 
+    border: 1px solid #444;
+    background: #21262d;
+    color: white; 
+    font-size: 16px; 
+    margin-bottom: 15px; 
+    transition: background-color 0.3s, border 0.3s; 
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    background-color: #2d333b; 
+    border: 1px solid #00bfff; 
+    outline: none; 
+}
+
+input::placeholder {
+    color: #aaa;
+    font-style: italic; 
+}
+
+#authMessage {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
 }
 
 .modal-content h2 {

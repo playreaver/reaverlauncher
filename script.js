@@ -12,13 +12,11 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-// Функция экранирования HTML (предотвращает XSS)
 function escapeHTML(str) {
     return str.replace(/</g, "&lt;").replace(/>/g, "&gt;")
               .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
-// Функция добавления поста с XSS-защитой
 function addPost() {
     var input = document.getElementById("postInput");
     var text = input.value.trim();
@@ -28,7 +26,7 @@ function addPost() {
         return;
     }
 
-    const safeText = escapeHTML(text); // Защищаем от XSS
+    const safeText = escapeHTML(text);
 
     db.collection("posts").add({
         text: safeText,
@@ -68,7 +66,7 @@ function loadPosts() {
                     : new Date().toLocaleString();
 
                 const textPara = document.createElement("p");
-                textPara.textContent = post.text; // Используем textContent вместо innerHTML
+                textPara.textContent = post.text;
 
                 const smallDate = document.createElement("small");
                 smallDate.textContent = `Дата: ${timestamp}`;
@@ -89,7 +87,6 @@ function loadPosts() {
         });
 }
 
-// Функция для добавления лайка
 function likePost(postId) {
     const postRef = db.collection("posts").doc(postId);
 
@@ -98,7 +95,6 @@ function likePost(postId) {
             const postData = doc.data();
             const newLikes = postData.likes + 1;
 
-            // Обновляем количество лайков
             postRef.update({
                 likes: newLikes
             }).then(() => {
@@ -111,7 +107,6 @@ function likePost(postId) {
 }
 
 
-// Загрузка постов при загрузке страницы
 window.onload = function() {
     loadPosts();
 };

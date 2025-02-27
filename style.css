@@ -1,4 +1,4 @@
-/* Общие стили */
+
 body {
     font-family: "Arial", sans-serif;
     background-color: #0d1117;
@@ -8,8 +8,6 @@ body {
     display: flex;
     line-height: 1.6;
 }
-
-/* Боковая панель */
 .sidebar {
     position: fixed;
     left: 0;
@@ -21,6 +19,7 @@ body {
     flex-direction: column;
     padding-top: 20px;
     box-shadow: 2px 0 10px rgba(255, 255, 255, 0.1);
+    transition: 0.3s ease-in-out;
 }
 
 .sidebar-btn {
@@ -39,13 +38,12 @@ body {
     background: #21262d;
 }
 
-/* Основной контент */
 .main-content {
-    margin-left: 200px; /* Делаем отступ от боковой панели */
+    margin-left: 200px;
     flex: 1;
+    transition: 0.3s;
 }
 
-/* Хедер */
 header {
     background: #161b22;
     padding: 15px;
@@ -59,14 +57,12 @@ h1 {
     color: #00bfff;
 }
 
-/* Контейнер */
 .container {
     max-width: 600px;
     margin: auto;
     padding: 20px;
 }
 
-/* Форма публикации */
 .post-box {
     background: #161b22;
     padding: 20px;
@@ -92,7 +88,6 @@ textarea:focus {
     background-color: #2d333b;
 }
 
-/* Кнопка публикации */
 .post-btn {
     background: #00bfff;
     color: white;
@@ -107,7 +102,6 @@ textarea:focus {
     transform: scale(1.02);
 }
 
-/* Посты */
 #posts {
     margin-top: 20px;
 }
@@ -132,7 +126,27 @@ textarea:focus {
     color: #fff;
 }
 
-/* Модальное окно */
+.login-btn,
+.register-btn {
+    background: #00bfff;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%;
+    display: block;
+    margin-top: 10px;
+}
+
+.login-btn:hover,
+.register-btn:hover {
+    background: #0088cc;
+    transform: scale(1.02);
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -155,45 +169,24 @@ textarea:focus {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.modal-content h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #00bfff;
-}
-
-.modal-content input {
-    width: 90%;
-    margin: 10px 0;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #21262d;
-    color: white;
-    font-size: 16px;
-    outline: none;
-}
-
-.modal-content input:focus {
-    background-color: #2d333b;
-}
-
-/* Адаптивность */
 @media (max-width: 768px) {
     .sidebar {
         width: 60px;
+        padding-top: 10px;
     }
 
     .sidebar-btn {
         text-align: center;
-        padding-left: 0;
+        padding: 10px;
+        font-size: 14px;
     }
 
     .main-content {
-        margin-left: 80px;
+        margin-left: 60px;
     }
 
     .container {
-        width: 90%;
+        width: 95%;
     }
 
     .modal-content {

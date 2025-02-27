@@ -12,14 +12,26 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-// Корректная защита от XSS (не ломает HTML)
+// Корректная защита от XSS
 function escapeHTML(str) {
     return str
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/'/g, "&#039;")
+        .replace(/\n/g, "&#10;"); // Кодируем перенос строки
+}
+
+// Декодер HTML-сущностей (для отображения в браузере)
+function decodeHTML(str) {
+    return str
+        .replace(/&#10;/g, "<br>")
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'");
 }
 
 function addPost() {
@@ -31,7 +43,7 @@ function addPost() {
         return;
     }
 
-    const safeText = escapeHTML(text).replace(/\n/g, "<br>");
+    const safeText = escapeHTML(text);
 
     db.collection("posts").add({
         text: safeText,
@@ -71,7 +83,7 @@ function loadPosts() {
                     : new Date().toLocaleString();
 
                 postElement.innerHTML = `
-                    <p>${post.text}</p>
+                    <p>${decodeHTML(post.text)}</p>
                     <small>Дата: ${timestamp}</small>
                     <div>
                         <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>

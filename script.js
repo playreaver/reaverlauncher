@@ -12,7 +12,6 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-// Функция для добавления поста
 function addPost() {
     var input = document.getElementById("postInput");
     var text = input.value.trim();
@@ -22,10 +21,8 @@ function addPost() {
         return;
     }
 
-    // Защищаем от XSS
     const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&/g, "&amp;");
 
-    // Заменяем переносы строк на <br>
     const formattedText = safeText.replace(/\n/g, "<br>");
 
     db.collection("posts").add({
@@ -41,7 +38,6 @@ function addPost() {
     });
 }
 
-// Функция для загрузки постов
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
     postsContainer.innerHTML = "<p>Загрузка постов...</p>";
@@ -66,7 +62,6 @@ function loadPosts() {
                     ? new Date(post.timestamp.seconds * 1000).toLocaleString()
                     : new Date().toLocaleString();
 
-                // Вставляем текст поста безопасно, без выполнения HTML
                 const postText = document.createElement("p");
                 postText.textContent = post.text.replace(/<br>/g, "\n");
 
@@ -86,7 +81,6 @@ function loadPosts() {
         });
 }
 
-// Функция для добавления лайка
 function likePost(postId) {
     const postRef = db.collection("posts").doc(postId);
 
@@ -100,11 +94,8 @@ function likePost(postId) {
     });
 }
 
-// Загрузка постов при загрузке страницы
 window.onload = loadPosts;
 
-
-// Функция входа
 function login() {
     var email = document.getElementById("username").value.trim();
     var password = document.getElementById("password").value.trim();

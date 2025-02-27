@@ -12,19 +12,29 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-// Функция добавления поста
+// Функция экранирования HTML (предотвращает XSS)
+function escapeHTML(str) {
+    return str.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+// Функция добавления поста с XSS-защитой
 function addPost() {
     var input = document.getElementById("postInput");
     var text = input.value.trim();
+
     if (text === "") {
         alert("Пост не может быть пустым!");
         return;
     }
+
+    const safeText = escapeHTML(text); // Защищаем от XSS
+
     db.collection("posts").add({
-        text: text,
-        likes: 0, // Начальное количество лайков
+        text: safeText,
+        likes: 0,
         comments: [],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp() // Используем только serverTimestamp
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
         console.log("Пост добавлен!");
         input.value = "";
@@ -33,18 +43,17 @@ function addPost() {
     });
 }
 
-// Функция для отображения постов
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
-    postsContainer.innerHTML = "<p>Загрузка постов...</p>"; // Индикатор загрузки
+    postsContainer.innerHTML = "<p>Загрузка постов...</p>";
 
     db.collection("posts")
-        .orderBy("timestamp", "desc")  // Сортировка по serverTimestamp
+        .orderBy("timestamp", "desc")
         .onSnapshot(function(snapshot) {
-            postsContainer.innerHTML = ""; // Очищаем контейнер после загрузки
+            postsContainer.innerHTML = "";
 
             if (snapshot.empty) {
-                postsContainer.innerHTML = "<p>Нет постов в базе данных.</p>";
+                postsContainer.innerHTML = "<p>Нет постов.</p>";
                 return;
             }
 
@@ -52,25 +61,31 @@ function loadPosts() {
                 const post = doc.data();
                 const postElement = document.createElement("div");
                 postElement.classList.add("post");
-                postElement.id = doc.id;  // Присваиваем id для корректного удаления
+                postElement.id = doc.id;
 
-                const timestamp = (post.timestamp && post.timestamp.seconds)
+                const timestamp = post.timestamp?.seconds
                     ? new Date(post.timestamp.seconds * 1000).toLocaleString()
-                    : new Date().toLocaleString(); // Fallback на локальное время
+                    : new Date().toLocaleString();
 
-                postElement.innerHTML = `
-                    <p>${post.text}</p>
-                    <small>Дата: ${timestamp}</small>
-                    <div>
-                        <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>
-                    </div>
-                `;
+                const textPara = document.createElement("p");
+                textPara.textContent = post.text; // Используем textContent вместо innerHTML
 
-                postsContainer.appendChild(postElement);  // Добавляем пост в контейнер
+                const smallDate = document.createElement("small");
+                smallDate.textContent = `Дата: ${timestamp}`;
+
+                const likeButton = document.createElement("button");
+                likeButton.classList.add("like-btn");
+                likeButton.textContent = `👍 Лайк (${post.likes})`;
+                likeButton.onclick = () => likePost(doc.id);
+
+                postElement.appendChild(textPara);
+                postElement.appendChild(smallDate);
+                postElement.appendChild(likeButton);
+                postsContainer.appendChild(postElement);
             });
         }, function(error) {
             console.error("Ошибка при загрузке постов: ", error);
-            postsContainer.innerHTML = "<p>Ошибка загрузки постов.</p>";
+            postsContainer.innerHTML = "<p>Ошибка загрузки.</p>";
         });
 }
 

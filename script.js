@@ -1,4 +1,4 @@
-    // Инициализация Firebase
+// Инициализация Firebase
 var firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
     authDomain: "reaversocial.firebaseapp.com",
@@ -12,10 +12,14 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-function escapeHTML(input) { // Функция для защиты от XSS
-    return input.replace(/[^a-zA-Z0-9]/g, function(match) {
-        return `&#${match.charCodeAt(0)};`;
-    });
+// Корректная защита от XSS (не ломает HTML)
+function escapeHTML(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 function addPost() {
@@ -48,7 +52,7 @@ function loadPosts() {
 
     db.collection("posts")
         .orderBy("timestamp", "desc")
-        .onSnapshot(function(snapshot) {
+        .onSnapshot(snapshot => {
             postsContainer.innerHTML = "";
 
             if (snapshot.empty) {
@@ -56,18 +60,18 @@ function loadPosts() {
                 return;
             }
 
-            snapshot.forEach(function(doc) {
+            snapshot.forEach(doc => {
                 const post = doc.data();
                 const postElement = document.createElement("div");
                 postElement.classList.add("post");
                 postElement.id = doc.id;
 
-                const timestamp = (post.timestamp && post.timestamp.seconds)
+                const timestamp = post.timestamp?.seconds
                     ? new Date(post.timestamp.seconds * 1000).toLocaleString()
                     : new Date().toLocaleString();
 
                 postElement.innerHTML = `
-                    <p>${escapeHTML(post.text)}</p>
+                    <p>${post.text}</p>
                     <small>Дата: ${timestamp}</small>
                     <div>
                         <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>
@@ -76,53 +80,7 @@ function loadPosts() {
 
                 postsContainer.appendChild(postElement);
             });
-        }, function(error) {
-            console.error("Ошибка при загрузке постов: ", error);
-            postsContainer.innerHTML = "<p>Ошибка загрузки постов.</p>";
-        });
-}
-
-const lowxssprotection = (input) => { // Made by @JustDeveloper1 - https://github.com/JustDeveloper1
-    return input.replace(/[^a-zA-Z0-9]/g, function(match) {
-        return `&#${match.charCodeAt(0)};`;
-    });
-}
-
-function loadPosts() {
-    const postsContainer = document.getElementById("posts");
-    postsContainer.innerHTML = "<p>Загрузка постов...</p>";
-
-    db.collection("posts")
-        .orderBy("timestamp", "desc")
-        .onSnapshot(function(snapshot) {
-            postsContainer.innerHTML = "";
-
-            if (snapshot.empty) {
-                postsContainer.innerHTML = "<p>Нет постов в базе данных.</p>";
-                return;
-            }
-
-            snapshot.forEach(function(doc) {
-                const post = doc.data();
-                const postElement = document.createElement("div");
-                postElement.classList.add("post");
-                postElement.id = doc.id;
-
-                const timestamp = (post.timestamp && post.timestamp.seconds)
-                    ? new Date(post.timestamp.seconds * 1000).toLocaleString()
-                    : new Date().toLocaleString();
-
-                postElement.innerHTML = `
-                    <p>${escapeHTML(post.text)}</p>
-                    <small>Дата: ${timestamp}</small>
-                    <div>
-                        <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>
-                    </div>
-                `;
-
-                postsContainer.appendChild(postElement);
-            });
-        }, function(error) {
+        }, error => {
             console.error("Ошибка при загрузке постов: ", error);
             postsContainer.innerHTML = "<p>Ошибка загрузки постов.</p>";
         });
@@ -135,25 +93,15 @@ function likePost(postId) {
     postRef.get().then(doc => {
         if (doc.exists) {
             const postData = doc.data();
-            const newLikes = postData.likes + 1;
-
-            // Обновляем количество лайков
-            postRef.update({
-                likes: newLikes
-            }).then(() => {
-                console.log("Лайк добавлен!");
-            }).catch(error => {
-                console.error("Ошибка при добавлении лайка: ", error);
-            });
+            postRef.update({ likes: postData.likes + 1 })
+                .then(() => console.log("Лайк добавлен!"))
+                .catch(error => console.error("Ошибка при добавлении лайка: ", error));
         }
     });
 }
 
-
 // Загрузка постов при загрузке страницы
-window.onload = function() {
-    loadPosts();
-};
+window.onload = loadPosts;
 
 // Функция входа
 function login() {
@@ -169,9 +117,7 @@ function login() {
             closeModal();
             document.querySelector(".login-btn").innerText = email;
         })
-        .catch(error => {
-            showMessage(error.message, "red");
-        });
+        .catch(error => showMessage(error.message, "red"));
 }
 
 // Функция регистрации
@@ -187,9 +133,7 @@ function register() {
             showMessage("Регистрация успешна!", "green");
             closeModal();
         })
-        .catch(error => {
-            showMessage(error.message, "red");
-        });
+        .catch(error => showMessage(error.message, "red"));
 }
 
 // Функция отображения сообщений

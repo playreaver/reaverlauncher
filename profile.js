@@ -2,23 +2,33 @@ import { auth, db } from './src/firebase.js';
 
 // Функция загрузки профиля пользователя
 async function loadUserProfile() {
-    const user = auth.currentUser; // Получаем текущего пользователя
+    const user = auth.currentUser;
     if (user) {
-        const userRef = db.collection("users").doc(user.uid); // Ссылка на документ пользователя
-        try {
-            const doc = await userRef.get(); // Получаем данные пользователя
-            if (doc.exists) {
-                const profile = doc.data(); // Извлекаем данные профиля
-                document.getElementById("username").textContent = profile.username; // Имя пользователя
-                document.getElementById("bio").textContent = profile.bio || "Нет биографии"; // Биография (если нет — по умолчанию)
-                document.getElementById("avatar").src = profile.avatar || "default-avatar.jpg"; // Аватарка (если нет — дефолтная)
-            } else {
-                console.error("Профиль не найден!");
-                alert("Не удалось загрузить профиль.");
+        // Проверяем, есть ли данные о пользователе в глобальной переменной
+        if (window.currentUser) {
+            const profile = window.currentUser;
+            document.getElementById("username").textContent = profile.username;
+            document.getElementById("bio").textContent = profile.bio || "Нет биографии";
+            document.getElementById("avatar").src = profile.avatar || "default-avatar.jpg";
+        } else {
+            const userRef = db.collection("users").doc(user.uid);
+            try {
+                const doc = await userRef.get();
+                if (doc.exists) {
+                    const profile = doc.data();
+                    // Сохраняем информацию о пользователе в глобальную переменную
+                    window.currentUser = profile;
+                    document.getElementById("username").textContent = profile.username;
+                    document.getElementById("bio").textContent = profile.bio || "Нет биографии";
+                    document.getElementById("avatar").src = profile.avatar || "default-avatar.jpg";
+                } else {
+                    console.error("Профиль не найден!");
+                    alert("Не удалось загрузить профиль.");
+                }
+            } catch (error) {
+                console.error("Ошибка при загрузке профиля:", error);
+                alert("Произошла ошибка при загрузке профиля.");
             }
-        } catch (error) {
-            console.error("Ошибка при загрузке профиля:", error);
-            alert("Произошла ошибка при загрузке профиля.");
         }
     } else {
         alert("Для просмотра профиля необходимо войти в аккаунт!");
@@ -26,34 +36,29 @@ async function loadUserProfile() {
     }
 }
 
-// Функция редактирования профиля пользователя
-async function editUserProfile() {
-    const user = auth.currentUser; // Получаем текущего пользователя
+// Слушатель на кнопку редактирования профиля
+document.getElementById("editProfileBtn").addEventListener("click", async function() {
+    const user = auth.currentUser;
     if (user) {
-        const bio = prompt("Введите новую биографию:"); // Запрашиваем новую биографию
+        const bio = prompt("Введите новую биографию:");
         if (bio !== null && bio.trim() !== "") {
             try {
-                const userRef = db.collection("users").doc(user.uid); // Ссылка на документ пользователя
-                await userRef.update({
-                    bio: bio // Обновляем биографию в базе данных
-                });
+                const userRef = db.collection("users").doc(user.uid);
+                await userRef.update({ bio: bio });
                 alert("Биография обновлена!");
-                loadUserProfile(); // Перезагружаем профиль после обновления
+                loadUserProfile(); // Перезагружаем профиль
             } catch (error) {
                 console.error("Ошибка обновления профиля:", error);
                 alert("Произошла ошибка при обновлении профиля.");
             }
         } else {
-            alert("Биография не может быть пустой!"); // Если пользователь ввел пустое значение
+            alert("Биография не может быть пустой!");
         }
     } else {
         alert("Для редактирования профиля необходимо войти в аккаунт!");
-        window.location.href = "login.html"; // Перенаправляем на страницу входа
+        window.location.href = "login.html";
     }
-}
-
-// Слушатель на кнопку редактирования профиля
-document.getElementById("editProfileBtn").addEventListener("click", editUserProfile);
+});
 
 // Загружаем профиль при загрузке страницы
 window.onload = loadUserProfile;

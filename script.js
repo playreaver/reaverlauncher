@@ -68,6 +68,16 @@ auth.onAuthStateChanged(user => {
             .then(doc => {
                 if (doc.exists) {
                     const username = doc.data().username;
+                    const bio = doc.data().bio;
+                    const avatar = doc.data().avatar;
+    
+                    window.currentUser = {
+                        username: username,
+                        bio: bio,
+                        avatar: avatar
+                    };
+
+                    // Обновляем информацию на странице
                     document.querySelector(".login-btn").innerText = username;
                 } else {
                     console.error("Пользователь не найден в базе данных");

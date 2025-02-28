@@ -44,6 +44,16 @@ function addPost() {
     });
 }
 
+auth.onAuthStateChanged(user => {
+    if (user) {
+        console.log("🔹 Пользователь вошел:", user.email);
+        document.querySelector(".login-btn").innerText = user.email;
+    } else {
+        console.log("🔸 Пользователь вышел");
+        document.querySelector(".login-btn").innerText = "Войти";
+    }
+});
+
 function loadPosts() {
     const postsContainer = document.getElementById("posts");
     postsContainer.innerHTML = "<p>Загрузка постов...</p>";

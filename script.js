@@ -13,6 +13,12 @@ var auth = firebase.auth();
 var db = firebase.firestore();
 
 function addPost() {
+    var user = auth.currentUser;
+    if (!user) {
+        alert("Для публикации постов необходимо войти в аккаунт!");
+        return;
+    }
+
     var input = document.getElementById("postInput");
     var text = input.value.trim();
 
@@ -22,19 +28,19 @@ function addPost() {
     }
 
     const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&/g, "&amp;");
-
     const formattedText = safeText.replace(/\n/g, "<br>");
 
     db.collection("posts").add({
         text: formattedText,
         likes: 0,
         comments: [],
+        userId: user.uid, // Сохраняем ID автора поста
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
-        console.log("Пост добавлен!");
+        console.log("✅ Пост добавлен!");
         input.value = "";
     }).catch(error => {
-        console.error("Ошибка добавления поста: ", error);
+        console.error("❌ Ошибка добавления поста: ", error);
     });
 }
 

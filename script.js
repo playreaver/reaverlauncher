@@ -128,14 +128,22 @@ function login() {
         .catch(error => showMessage(error.message, "red"));
 }
 
-// Функция регистрации
 function register() {
     var email = document.getElementById("username").value.trim();
     var password = document.getElementById("password").value.trim();
+    var termsChecked = document.getElementById("termsCheckbox").checked;
+    var privacyChecked = document.getElementById("privacyCheckbox").checked;
+
     if (!email || !password) {
         showMessage("Заполните все поля!", "red");
         return;
     }
+
+    if (!termsChecked || !privacyChecked) {
+        showMessage("Вы должны принять условия использования и политику конфиденциальности!", "red");
+        return;
+    }
+
     auth.createUserWithEmailAndPassword(email, password)
         .then(() => {
             showMessage("Регистрация успешна!", "green");
@@ -143,14 +151,6 @@ function register() {
         })
         .catch(error => showMessage(error.message, "red"));
 }
-
-// Функция отображения сообщений
-function showMessage(text, color) {
-    var msg = document.getElementById("authMessage");
-    msg.innerText = text;
-    msg.style.color = color;
-}
-
 // Открытие окна входа
 function toggleLogin() {
     document.getElementById("authModal").style.display = "flex";

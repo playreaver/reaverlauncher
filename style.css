@@ -184,6 +184,11 @@ textarea::placeholder {
     margin: 0;
     color: #fff;
     white-space: pre-line;
+    
+    text-wrap-mode: wrap;
+    max-width: 100%;
+    overflow-wrap: break-word;
+
 }
 
 .post-btn:active, .login-btn:active, .register-btn:active {

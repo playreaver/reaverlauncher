@@ -47,7 +47,20 @@ function addPost() {
 auth.onAuthStateChanged(user => {
     if (user) {
         console.log("🔹 Пользователь вошел:", user.email);
-        document.querySelector(".login-btn").innerText = user.email;
+
+        db.collection("users").doc(user.uid).get()
+            .then(doc => {
+                if (doc.exists) {
+                    const username = doc.data().username;
+                    document.querySelector(".login-btn").innerText = username; // Отображаем юзернейм
+                } else {
+                    console.error("Пользователь не найден в базе данных");
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка загрузки юзернейма: ", error);
+            });
+
     } else {
         console.log("🔸 Пользователь вышел");
         document.querySelector(".login-btn").innerText = "Войти";

@@ -40,13 +40,25 @@
         </main>
     </div>
 
-    <!-- Окно входа/регистрации -->
     <div id="authModal" class="modal">
         <div class="modal-content">
             <h2>Вход в Element</h2>
             <input type="text" id="username" placeholder="Email">
             <input type="password" id="password" placeholder="Пароль">
-            <button class="login-btn" onclick="login()">Войти</button>
+    
+            <div class="checkbox-container">
+                <label class="custom-checkbox">
+                    <input type="checkbox" id="termsCheckbox">
+                    <span class="checkmark"></span>
+                    Я принимаю <a href="terms.html" target="_blank">Условия использования</a>
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" id="privacyCheckbox">
+                    <span class="checkmark"></span>
+                    Я согласен с <a href="privacy.html" target="_blank">Политикой конфиденциальности</a>
+                </label>
+            </div>
+    
             <button class="register-btn" onclick="register()">Регистрация</button>
             <p id="authMessage"></p>
         </div>

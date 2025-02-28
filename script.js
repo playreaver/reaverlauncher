@@ -161,6 +161,15 @@ function showMessage(text, color) {
     msg.innerText = text;
     msg.style.color = color;
 }
+
+function openTerms() {
+    window.open('terms.html', 'Terms', 'width=500,height=600,resizable=no,scrollbars=yes');
+}
+
+function openPrivacy() {
+    window.open('privacy.html', 'Privacy', 'width=500,height=600,resizable=no,scrollbars=yes');
+}
+
 // Открытие окна входа
 function toggleLogin() {
     document.getElementById("authModal").style.display = "flex";

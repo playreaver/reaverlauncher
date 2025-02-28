@@ -30,18 +30,33 @@ function addPost() {
     const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&/g, "&amp;");
     const formattedText = safeText.replace(/\n/g, "<br>");
 
-    db.collection("posts").add({
-        text: formattedText,
-        likes: 0,
-        comments: [],
-        userId: user.uid, // Сохраняем ID автора поста
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        console.log("✅ Пост добавлен!");
-        input.value = "";
-    }).catch(error => {
-        console.error("❌ Ошибка добавления поста: ", error);
-    });
+    // Получаем юзернейм из базы данных
+    db.collection("users").doc(user.uid).get()
+        .then(doc => {
+            if (doc.exists) {
+                const username = doc.data().username;
+
+                // Добавляем пост в коллекцию, включая ник
+                db.collection("posts").add({
+                    text: formattedText,
+                    likes: 0,
+                    comments: [],
+                    userId: user.uid, // Сохраняем ID автора поста
+                    username: username, // Добавляем юзернейм
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    console.log("✅ Пост добавлен!");
+                    input.value = "";
+                }).catch(error => {
+                    console.error("❌ Ошибка добавления поста: ", error);
+                });
+            } else {
+                console.error("Пользователь не найден в базе данных");
+            }
+        })
+        .catch(error => {
+            console.error("Ошибка при получении юзернейма: ", error);
+        });
 }
 
 auth.onAuthStateChanged(user => {
@@ -94,8 +109,13 @@ function loadPosts() {
                 const postText = document.createElement("p");
                 postText.textContent = post.text.replace(/<br>/g, "\n");
 
+                // Создание элемента для отображения никнейма
+                const usernameElement = document.createElement("p");
+                usernameElement.textContent = `Автор: ${post.username}`; // Отображаем ник
+
+                postElement.appendChild(usernameElement);
                 postElement.appendChild(postText);
-                postElement.innerHTML += `
+                postElement.innerHTML += ` 
                     <small>Дата: ${timestamp}</small>
                     <div>
                         <button class="like-btn" onclick="likePost('${doc.id}')">👍 Лайк (${post.likes})</button>

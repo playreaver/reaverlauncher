@@ -131,10 +131,11 @@ function login() {
 function register() {
     var email = document.getElementById("username").value.trim();
     var password = document.getElementById("password").value.trim();
+    var username = document.getElementById("usernameInput").value.trim();
     var termsChecked = document.getElementById("termsCheckbox").checked;
     var privacyChecked = document.getElementById("privacyCheckbox").checked;
 
-    if (!email || !password) {
+    if (!email || !password || !username) {
         showMessage("Заполните все поля!", "red");
         return;
     }
@@ -144,12 +145,32 @@ function register() {
         return;
     }
 
-    auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            showMessage("Регистрация успешна!", "green");
-            closeModal();
+    db.collection("users").where("username", "==", username).get()
+        .then(snapshot => {
+            if (!snapshot.empty) {
+                showMessage("Этот юзернейм уже занят!", "red");
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    db.collection("users").doc(userCredential.user.uid).set({
+                        username: username,
+                        email: email,
+                        uid: userCredential.user.uid
+                    })
+                    .then(() => {
+                        showMessage("Регистрация успешна!", "green");
+                        closeModal();
+                    })
+                    .catch(error => showMessage(error.message, "red"));
+                })
+                .catch(error => showMessage(error.message, "red"));
         })
-        .catch(error => showMessage(error.message, "red"));
+        .catch(error => {
+            console.error("Ошибка проверки уникальности юзернейма: ", error);
+            showMessage("Ошибка регистрации. Попробуйте позже.", "red");
+        });
 }
 
 function showMessage(text, color) {

@@ -211,6 +211,44 @@ textarea::placeholder {
     margin-top: 10px;
 }
 
+.google-login-btn {
+    background-color: #4285F4;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.google-login-btn::before {
+    content: url('https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg');
+    width: 20px;
+    margin-right: 10px;
+}
+
+.google-login-btn:hover {
+    background-color: #3367D6;
+}
+
+.google-login-btn:active {
+    background-color: #2A56C6;
+}
+
+@media screen and (max-width: 600px) {
+    .google-login-btn {
+        font-size: 14px;
+        padding: 10px 18px;
+    }
+}
+
 .checkbox-container {
     display: flex;
     flex-direction: column;

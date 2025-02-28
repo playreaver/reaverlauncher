@@ -61,13 +61,14 @@ function addPost() {
 
 auth.onAuthStateChanged(user => {
     if (user) {
-        console.log("🔹 Пользователь вошел:", user.email);
+        console.log("🔹 Пользователь вошел:", user.displayName || user.email);
+        document.querySelector(".login-btn").innerText = user.displayName || user.email;
 
         db.collection("users").doc(user.uid).get()
             .then(doc => {
                 if (doc.exists) {
                     const username = doc.data().username;
-                    document.querySelector(".login-btn").innerText = username; // Отображаем юзернейм
+                    document.querySelector(".login-btn").innerText = username;
                 } else {
                     console.error("Пользователь не найден в базе данных");
                 }
@@ -75,7 +76,6 @@ auth.onAuthStateChanged(user => {
             .catch(error => {
                 console.error("Ошибка загрузки юзернейма: ", error);
             });
-
     } else {
         console.log("🔸 Пользователь вышел");
         document.querySelector(".login-btn").innerText = "Войти";
@@ -160,6 +160,30 @@ function login() {
         })
         .catch(error => showMessage(error.message, "red"));
 }
+
+// Функция для входа через Google
+function googleLogin() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            var user = result.user;
+            console.log("Успешный вход через Google:", user);
+
+            var credential = result.credential;
+            var token = credential.accessToken;
+            var userInfo = user.displayName;
+
+            showMessage(`Добро пожаловать, ${userInfo}!`, "green");
+            closeModal();
+        })
+        .catch((error) => {
+            console.error("Ошибка входа через Google: ", error);
+            showMessage("Ошибка входа через Google.", "red");
+        });
+}
+
+document.getElementById("googleLoginBtn").addEventListener("click", googleLogin);
 
 function register() {
     var email = document.getElementById("username").value.trim();

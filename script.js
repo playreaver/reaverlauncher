@@ -151,6 +151,16 @@ function register() {
         })
         .catch(error => showMessage(error.message, "red"));
 }
+
+function showMessage(text, color) {
+    var msg = document.getElementById("authMessage");
+    if (!msg) {
+        console.error("Элемент #authMessage не найден!");
+        return;
+    }
+    msg.innerText = text;
+    msg.style.color = color;
+}
 // Открытие окна входа
 function toggleLogin() {
     document.getElementById("authModal").style.display = "flex";

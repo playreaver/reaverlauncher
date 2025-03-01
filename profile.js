@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
@@ -54,6 +54,25 @@ onAuthStateChanged(auth, async (user) => {
                     document.getElementById("bioEditModal").style.display = "none";
                 });
 
+                document.getElementById("publishPostBtn").addEventListener("click", async () => {
+                    const postContent = document.getElementById("postContent").value.trim();
+                    if (postContent === "") return;
+
+                    try {
+                        await addDoc(collection(db, "profileposts"), {
+                            userId: userId,
+                            username: userData.username,
+                            content: postContent,
+                            timestamp: new Date()
+                        });
+                        document.getElementById("postContent").value = ""; 
+                        loadPosts(userId); 
+                    } catch (error) {
+                        console.error("Ошибка публикации поста:", error);
+                    }
+                });
+
+                loadPosts(userId);
             } else {
                 console.log("Документ не найден!");
             }
@@ -65,3 +84,22 @@ onAuthStateChanged(auth, async (user) => {
         window.location.href = "login.html";
     }
 });
+
+async function loadPosts(userId) {
+    const postsContainer = document.getElementById("posts");
+    postsContainer.innerHTML = ""; 
+
+    const q = query(collection(db, "profileposts"), where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+        const postData = doc.data();
+        const postElement = document.createElement("div");
+        postElement.classList.add("post");
+        postElement.innerHTML = `
+            <p><strong>${postData.username}</strong></p>
+            <p>${postData.content}</p>
+        `;
+        postsContainer.appendChild(postElement);
+    });
+}

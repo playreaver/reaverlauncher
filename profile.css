@@ -8,7 +8,7 @@ body {
     flex-direction: column;
     line-height: 1.6;
     justify-content: flex-start;
-    align-items: stretch;  
+    align-items: center;  
     height: 100vh;
     overflow-y: auto; 
 }

@@ -1,64 +1,40 @@
-import { auth, db } from './src/firebase.js'; 
+var firebaseConfig = {
+    apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
+    authDomain: "reaversocial.firebaseapp.com",
+    projectId: "reaversocial",
+    storageBucket: "reaversocial.firebasestorage.app",
+    messagingSenderId: "461982892032",
+    appId: "1:461982892032:web:5327c7e66a4ddddff1d8e5",
+    measurementId: "G-CD344TGD2D"
+};
 
-// Функция загрузки профиля пользователя
+firebase.initializeApp(firebaseConfig);
+
+const avatarImg = document.getElementById('avatar');
+const usernameSpan = document.getElementById('username');
+const bioSpan = document.getElementById('bio');
+const emailSpan = document.getElementById('email');
+
 async function loadUserProfile() {
-    const user = auth.currentUser;
+    const user = firebase.auth().currentUser;
+    
     if (user) {
-        // Проверяем, есть ли данные о пользователе в глобальной переменной
-        if (window.currentUser) {
-            const profile = window.currentUser;
-            document.getElementById("username").textContent = profile.username;
-            document.getElementById("bio").textContent = profile.bio || "Нет биографии";
-            document.getElementById("avatar").src = profile.avatar || "default-avatar.jpg";
+        const db = firebase.firestore();
+        const userRef = db.collection("users").doc(user.uid);
+        const doc = await userRef.get();
+
+        if (doc.exists) {
+            const userData = doc.data();
+            usernameSpan.textContent = userData.username || 'Неизвестно';
+            emailSpan.textContent = userData.email || 'Нет email';
+            bioSpan.textContent = userData.bio || 'Нет информации';
+            avatarImg.src = userData.avatar || 'default-avatar.png';
         } else {
-            const userRef = db.collection("users").doc(user.uid);
-            try {
-                const doc = await userRef.get();
-                if (doc.exists) {
-                    const profile = doc.data();
-                    // Сохраняем информацию о пользователе в глобальную переменную
-                    window.currentUser = profile;
-                    document.getElementById("username").textContent = profile.username;
-                    document.getElementById("bio").textContent = profile.bio || "Нет биографии";
-                    document.getElementById("avatar").src = profile.avatar || "default-avatar.jpg";
-                } else {
-                    console.error("Профиль не найден!");
-                    alert("Не удалось загрузить профиль.");
-                }
-            } catch (error) {
-                console.error("Ошибка при загрузке профиля:", error);
-                alert("Произошла ошибка при загрузке профиля.");
-            }
+            console.log('Данные пользователя не найдены');
         }
     } else {
-        alert("Для просмотра профиля необходимо войти в аккаунт!");
-        window.location.href = "login.html"; // Перенаправляем на страницу входа
+        console.log('Пользователь не авторизован');
     }
 }
 
-// Слушатель на кнопку редактирования профиля
-document.getElementById("editProfileBtn").addEventListener("click", async function() {
-    const user = auth.currentUser;
-    if (user) {
-        const bio = prompt("Введите новую биографию:");
-        if (bio !== null && bio.trim() !== "") {
-            try {
-                const userRef = db.collection("users").doc(user.uid);
-                await userRef.update({ bio: bio });
-                alert("Биография обновлена!");
-                loadUserProfile(); // Перезагружаем профиль
-            } catch (error) {
-                console.error("Ошибка обновления профиля:", error);
-                alert("Произошла ошибка при обновлении профиля.");
-            }
-        } else {
-            alert("Биография не может быть пустой!");
-        }
-    } else {
-        alert("Для редактирования профиля необходимо войти в аккаунт!");
-        window.location.href = "login.html";
-    }
-});
-
-// Загружаем профиль при загрузке страницы
-window.onload = loadUserProfile;
+loadUserProfile();

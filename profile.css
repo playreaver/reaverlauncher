@@ -4,13 +4,13 @@ body {
     color: #fff;
     margin: 0;
     padding: 0;
-    flex-direction: column;
     display: flex;
+    flex-direction: column;
     line-height: 1.6;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: stretch;  
     height: 100vh;
-    overflow-y: auto;  /* Разрешаем прокрутку всей страницы */
+    overflow-y: auto; 
 }
 
 #postSection {

@@ -61,8 +61,8 @@ function addPost() {
 
 auth.onAuthStateChanged(user => {
     if (user) {
-        console.log("🔹 Пользователь вошел:", user.displayName  user.email);
-        document.querySelector(".login-btn").innerText = user.displayName  user.email;
+        console.log("🔹 Пользователь вошел:", user.displayName, user.email);
+        document.querySelector(".login-btn").innerText = user.displayName || user.email;
 
         db.collection("users").doc(user.uid).get()
             .then(doc => {
@@ -107,10 +107,10 @@ function loadPosts() {
                     : new Date().toLocaleString();
 
                 const postText = document.createElement("p");
-                postText.textContent = post.text.replace(/<br>/g, "\n");
+                postText.innerHTML = post.text;
 
                 const usernameElement = document.createElement("p");
-                usernameElement.textContent = Автор: ${post.username}; // Отображаем ник
+                usernameElement.textContent = `Автор: ${post.username}`;
 
                 postElement.appendChild(usernameElement);
                 postElement.appendChild(postText);
@@ -147,7 +147,7 @@ window.onload = loadPosts;
 function login() {
     var email = document.getElementById("username").value.trim();
     var password = document.getElementById("password").value.trim();
-    if (!email  !password) {
+    if (!email || !password) {
         showMessage("Заполните все поля!", "red");
         return;
     }
@@ -169,7 +169,7 @@ function googleLogin() {
             console.log("Успешный вход через Google:", user);
 
             var credential = result.credential;
-            var token = credential.accessToken;
+            var token = credential ? credential.accessToken : null;
             var userInfo = user.displayName;
 
             showMessage(`Добро пожаловать, ${userInfo}!`, "green");
@@ -190,12 +190,12 @@ function register() {
     var termsChecked = document.getElementById("termsCheckbox").checked;
     var privacyChecked = document.getElementById("privacyCheckbox").checked;
 
-    if (!email  !password  !username) {
+    if (!email || !password || !username) {
         showMessage("Заполните все поля!", "red");
         return;
     }
 
-    if (!termsChecked  !privacyChecked) {
+    if (!termsChecked || !privacyChecked) {
         showMessage("Вы должны принять условия использования и политику конфиденциальности!", "red");
         return;
     }
@@ -207,7 +207,7 @@ function register() {
                 return;
             }
 
-auth.createUserWithEmailAndPassword(email, password)
+            auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     db.collection("users").doc(userCredential.user.uid).set({
                         username: username,
@@ -226,32 +226,4 @@ auth.createUserWithEmailAndPassword(email, password)
             console.error("Ошибка проверки уникальности юзернейма: ", error);
             showMessage("Ошибка регистрации. Попробуйте позже.", "red");
         });
-}
-
-function showMessage(text, color) {
-    var msg = document.getElementById("authMessage");
-    if (!msg) {
-        console.error("Элемент #authMessage не найден!");
-        return;
-    }
-    msg.innerText = text;
-    msg.style.color = color;
-}
-
-function openTerms() {
-    window.open('terms.html', 'Terms', 'width=500,height=600,resizable=no,scrollbars=yes');
-}
-
-function openPrivacy() {
-    window.open('privacy.html', 'Privacy', 'width=500,height=600,resizable=no,scrollbars=yes');
-}
-
-// Открытие окна входа
-function toggleLogin() {
-    document.getElementById("authModal").style.display = "flex";
-}
-
-// Закрытие окна входа
-function closeModal() {
-    document.getElementById("authModal").style.display = "none";
 }

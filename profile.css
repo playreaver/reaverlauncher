@@ -4,6 +4,7 @@ body {
     color: #fff;
     margin: 0;
     padding: 0;
+    flex-direction: column;
     display: flex;
     line-height: 1.6;
     justify-content: center;

@@ -13,13 +13,16 @@ var db = firebase.firestore();
 var auth = firebase.auth();
 
 auth.onAuthStateChanged(function(user) {
+    console.log("Пользователь:", user); 
     if (user) {
         var userId = user.uid;
+        console.log("UID пользователя:", userId);
 
         db.collection("users").doc(userId).get().then(function(doc) {
             if (doc.exists) {
                 var userData = doc.data();
-                
+                console.log("Данные пользователя:", userData); 
+
                 document.getElementById("username").textContent = userData.username;
                 document.getElementById("bio").textContent = userData.bio || "Биография не задана.";
                 document.getElementById("avatar").src = userData.avatar || "default-avatar.png";
@@ -29,30 +32,8 @@ auth.onAuthStateChanged(function(user) {
         }).catch(function(error) {
             console.error("Ошибка получения документа: ", error);
         });
-
-        document.getElementById("editBioBtn").addEventListener("click", function() {
-            var bioContent = document.getElementById("bio").textContent;
-            document.getElementById("bioEditTextarea").value = bioContent === "Биография не задана." ? "" : bioContent;
-            document.getElementById("bioEditModal").style.display = "flex";
-        });
-
-        document.getElementById("saveBioBtn").addEventListener("click", function() {
-            var newBio = document.getElementById("bioEditTextarea").value;
-            db.collection("users").doc(userId).update({
-                bio: newBio
-            }).then(function() {
-                document.getElementById("bio").textContent = newBio || "Биография не задана.";
-                document.getElementById("bioEditModal").style.display = "none";
-            }).catch(function(error) {
-                console.error("Ошибка обновления биографии: ", error);
-            });
-        });
-
-        document.getElementById("cancelBioBtn").addEventListener("click", function() {
-            document.getElementById("bioEditModal").style.display = "none";
-        });
-
     } else {
+        console.log("Пользователь не авторизован, перенаправление на login.html");
         window.location.href = "login.html";
     }
 });

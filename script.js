@@ -1,3 +1,4 @@
+sassy scene, [01.03.2025 0:56]
 // Инициализация Firebase
 var firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
@@ -61,23 +62,13 @@ function addPost() {
 
 auth.onAuthStateChanged(user => {
     if (user) {
-        console.log("🔹 Пользователь вошел:", user.displayName || user.email);
-        document.querySelector(".login-btn").innerText = user.displayName || user.email;
+        console.log("🔹 Пользователь вошел:", user.displayName  user.email);
+        document.querySelector(".login-btn").innerText = user.displayName  user.email;
 
         db.collection("users").doc(user.uid).get()
             .then(doc => {
                 if (doc.exists) {
                     const username = doc.data().username;
-                    const bio = doc.data().bio;
-                    const avatar = doc.data().avatar;
-    
-                    window.currentUser = {
-                        username: username,
-                        bio: bio,
-                        avatar: avatar
-                    };
-
-                    // Обновляем информацию на странице
                     document.querySelector(".login-btn").innerText = username;
                 } else {
                     console.error("Пользователь не найден в базе данных");
@@ -119,9 +110,10 @@ function loadPosts() {
                 const postText = document.createElement("p");
                 postText.textContent = post.text.replace(/<br>/g, "\n");
 
-                // Создание элемента для отображения никнейма
+sassy scene, [01.03.2025 0:56]
+// Создание элемента для отображения никнейма
                 const usernameElement = document.createElement("p");
-                usernameElement.textContent = `Автор: ${post.username}`; // Отображаем ник
+                usernameElement.textContent = Автор: ${post.username}; // Отображаем ник
 
                 postElement.appendChild(usernameElement);
                 postElement.appendChild(postText);
@@ -158,7 +150,7 @@ window.onload = loadPosts;
 function login() {
     var email = document.getElementById("username").value.trim();
     var password = document.getElementById("password").value.trim();
-    if (!email || !password) {
+    if (!email  !password) {
         showMessage("Заполните все поля!", "red");
         return;
     }
@@ -202,12 +194,12 @@ function register() {
     var termsChecked = document.getElementById("termsCheckbox").checked;
     var privacyChecked = document.getElementById("privacyCheckbox").checked;
 
-    if (!email || !password || !username) {
+    if (!email  !password  !username) {
         showMessage("Заполните все поля!", "red");
         return;
     }
 
-    if (!termsChecked || !privacyChecked) {
+    if (!termsChecked  !privacyChecked) {
         showMessage("Вы должны принять условия использования и политику конфиденциальности!", "red");
         return;
     }
@@ -219,7 +211,8 @@ function register() {
                 return;
             }
 
-            auth.createUserWithEmailAndPassword(email, password)
+sassy scene, [01.03.2025 0:56]
+auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     db.collection("users").doc(userCredential.user.uid).set({
                         username: username,

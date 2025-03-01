@@ -231,3 +231,25 @@ function register() {
             showMessage("Ошибка регистрации. Попробуйте позже.", "red");
         });
 }
+
+window.onload = function() {
+    console.log("🔥 Страница загружена");
+    loadPosts();
+    
+    const loginBtn = document.querySelector(".login-btn");
+    if (loginBtn) {
+        loginBtn.onclick = toggleLogin;
+    } else {
+        console.error("❌ Кнопка входа не найдена!");
+    }
+};
+
+function toggleLogin() {
+    console.log("🔹 Открытие модального окна входа");
+    document.getElementById("authModal").style.display = "flex";
+}
+
+function closeModal() {
+    console.log("🔸 Закрытие модального окна входа");
+    document.getElementById("authModal").style.display = "none";
+}

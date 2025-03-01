@@ -50,9 +50,8 @@ body {
     color: #bbb;
 }
 
-/* Модальное окно редактирования биографии */
 #bioEditModal {
-    display: none; /* По умолчанию скрыто */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;

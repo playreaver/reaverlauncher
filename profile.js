@@ -1,3 +1,4 @@
+
 var firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
     authDomain: "reaversocial.firebaseapp.com",
@@ -9,32 +10,27 @@ var firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+var auth = firebase.auth();
 
-const avatarImg = document.getElementById('avatar');
-const usernameSpan = document.getElementById('username');
-const bioSpan = document.getElementById('bio');
-const emailSpan = document.getElementById('email');
-
-async function loadUserProfile() {
-    const user = firebase.auth().currentUser;
-    
+auth.onAuthStateChanged(function(user) {
     if (user) {
-        const db = firebase.firestore();
-        const userRef = db.collection("users").doc(user.uid);
-        const doc = await userRef.get();
+        var userId = user.uid;
 
-        if (doc.exists) {
-            const userData = doc.data();
-            usernameSpan.textContent = userData.username || 'Неизвестно';
-            emailSpan.textContent = userData.email || 'Нет email';
-            bioSpan.textContent = userData.bio || 'Нет информации';
-            avatarImg.src = userData.avatar || 'default-avatar.png';
-        } else {
-            console.log('Данные пользователя не найдены');
-        }
+        db.collection("users").doc(userId).get().then(function(doc) {
+            if (doc.exists) {
+                var userData = doc.data();
+
+                document.getElementById("username").textContent = userData.username;
+                document.getElementById("bio").textContent = userData.bio || "Биография не задана.";
+                document.getElementById("avatar").src = userData.avatar || "default-avatar.png";
+            } else {
+                console.log("Документ не найден!");
+            }
+        }).catch(function(error) {
+            console.error("Ошибка получения документа: ", error);
+        });
     } else {
-        console.log('Пользователь не авторизован');
+        window.location.href = "login.html";
     }
-}
-
-loadUserProfile();
+});

@@ -1,4 +1,3 @@
-sassy scene, [01.03.2025 0:56]
 // Инициализация Firebase
 var firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",

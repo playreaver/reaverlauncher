@@ -46,6 +46,8 @@ function loadPosts(userId) {
         .orderBy("timestamp", "desc")
         .get()
         .then(snapshot => {
+            console.log("Полученные посты: ", snapshot); 
+
             postsContainer.innerHTML = "";
 
             if (snapshot.empty) {
@@ -69,5 +71,6 @@ function loadPosts(userId) {
             console.error("Ошибка при загрузке постов:", error);
         });
 }
+
 
 window.onload = loadProfile;

@@ -1,3 +1,4 @@
+
 body {
     font-family: "Arial", sans-serif;
     background-color: #0d1117;
@@ -50,6 +51,34 @@ body {
     color: #bbb;
 }
 
+#editBioBtn {
+    background-color: #00bfff;
+    color: white;
+    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    width: 100%;
+    margin-top: 15px;
+}
+
+#editBioBtn:hover {
+    background-color: #0088cc;
+    transform: scale(1.05);
+}
+
+#editBioBtn:active {
+    background-color: #0077b3;
+    transform: scale(0.98);
+}
+
+#editBioBtn:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 191, 255, 0.5);
+}
+
 #bioEditModal {
     display: none;
     position: fixed;
@@ -61,6 +90,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    transition: opacity 0.3s ease;
 }
 
 #bioEditModal .modal-content {
@@ -71,6 +101,8 @@ body {
     width: 80%;
     max-width: 500px;
     text-align: center;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-in-out;
 }
 
 #bioEditModal textarea {
@@ -94,6 +126,7 @@ body {
     cursor: pointer;
     margin: 5px;
     transition: background-color 0.3s ease;
+    font-size: 16px;
 }
 
 #bioEditModal button:hover {
@@ -102,29 +135,6 @@ body {
 
 #bioEditModal button:active {
     background-color: #0077b3;
-}
-
-#editProfileBtn {
-    background-color: #00bfff;
-    color: white;
-    font-size: 16px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0px 4px 8px rgba(0, 191, 255, 0.3);
-    width: 100%;
-}
-
-#editProfileBtn:hover {
-    background-color: #0088cc;
-    transform: scale(1.05);
-}
-
-#editProfileBtn:active {
-    background-color: #0077b3;
-    transform: scale(0.98);
 }
 
 @media (max-width: 600px) {
@@ -145,5 +155,9 @@ body {
     #editProfileBtn {
         font-size: 18px;
         padding: 10px;
+    }
+
+    #bioEditModal .modal-content {
+        width: 90%;
     }
 }

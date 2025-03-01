@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
@@ -15,6 +16,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+async function uploadAvatar(file) {
+    const storage = getStorage(app);
+    const userId = auth.currentUser.uid;
+    const avatarRef = ref(storage, `avatars/${userId}/${file.name}`);
+
+    try {
+        const snapshot = await uploadBytes(avatarRef, file);
+        console.log("Аватарка успешно загружена!");
+
+        const downloadURL = await getDownloadURL(snapshot.ref());
+        console.log("URL аватарки:", downloadURL);
+
+        const userDocRef = doc(db, "users", userId);
+        await updateDoc(userDocRef, { avatar: downloadURL });
+
+        document.getElementById("avatar").src = downloadURL;
+    } catch (error) {
+        console.error("Ошибка загрузки аватарки:", error);
+    }
+}
 
 onAuthStateChanged(auth, async (user) => {
     console.log("Пользователь:", user);
@@ -69,6 +91,17 @@ onAuthStateChanged(auth, async (user) => {
                         loadPosts(userId); 
                     } catch (error) {
                         console.error("Ошибка публикации поста:", error);
+                    }
+                });
+
+                document.getElementById("uploadAvatarBtn").addEventListener("click", () => {
+                    document.getElementById("avatarInput").click();
+                });
+
+                document.getElementById("avatarInput").addEventListener("change", (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        uploadAvatar(file); 
                     }
                 });
 

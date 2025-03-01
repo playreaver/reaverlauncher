@@ -64,14 +64,16 @@ body {
 }
 
 #posts {
-    display: center;
+    display: flex;
     flex-direction: column;
     gap: 8px;
     width: 100%;
+    max-width: 500px; 
     margin-top: 30px;
-    opacity: 0; /* Начинаем скрытым */
-    animation: fadeIn 0.6s forwards;  /* Плавное появление */
+    opacity: 0; 
+    animation: fadeIn 0.6s forwards;  
     box-sizing: border-box;
+    padding: 0 20px;
 }
 
 @keyframes fadeIn {

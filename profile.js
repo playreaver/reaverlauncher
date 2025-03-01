@@ -22,7 +22,7 @@ auth.onAuthStateChanged(function(user) {
 
                 document.getElementById("username").textContent = userData.username;
                 document.getElementById("bio").textContent = userData.bio || "Биография не задана.";
-                document.getElementById("avatar").src = userData.avatar || "default-avatar.png";
+                document.getElementById("avatar").src = userData.avatar || "1exportdslogo.png";
             } else {
                 console.log("Документ не найден!");
             }

@@ -1,4 +1,3 @@
-// Инициализация Firebase
 var firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
     authDomain: "reaversocial.firebaseapp.com",
@@ -11,6 +10,16 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
+
+// Функция защиты от XSS
+function escapeHTML(text) {
+    return text.replace(/</g, "&lt;")
+               .replace(/>/g, "&gt;")
+               .replace(/&/g, "&amp;")
+               .replace(/"/g, "&quot;")
+               .replace(/'/g, "&#39;")
+               .replace(/\n/g, "<br>");
+}
 
 function addPost() {
     var user = auth.currentUser;
@@ -27,22 +36,19 @@ function addPost() {
         return;
     }
 
-    const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&/g, "&amp;");
-    const formattedText = safeText.replace(/\n/g, "<br>");
+    const formattedText = escapeHTML(text);
 
-    // Получаем юзернейм из базы данных
     db.collection("users").doc(user.uid).get()
         .then(doc => {
             if (doc.exists) {
-                const username = doc.data().username;
+                const username = escapeHTML(doc.data().username);
 
-                // Добавляем пост в коллекцию, включая ник
                 db.collection("posts").add({
                     text: formattedText,
                     likes: 0,
                     comments: [],
-                    userId: user.uid, // Сохраняем ID автора поста
-                    username: username, // Добавляем юзернейм
+                    userId: user.uid,
+                    username: username,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 }).then(() => {
                     console.log("✅ Пост добавлен!");
@@ -62,12 +68,12 @@ function addPost() {
 auth.onAuthStateChanged(user => {
     if (user) {
         console.log("🔹 Пользователь вошел:", user.displayName, user.email);
-        document.querySelector(".login-btn").innerText = user.displayName || user.email;
+        document.querySelector(".login-btn").innerText = escapeHTML(user.displayName || user.email);
 
         db.collection("users").doc(user.uid).get()
             .then(doc => {
                 if (doc.exists) {
-                    const username = doc.data().username;
+                    const username = escapeHTML(doc.data().username);
                     document.querySelector(".login-btn").innerText = username;
                 } else {
                     console.error("Пользователь не найден в базе данных");
@@ -107,10 +113,10 @@ function loadPosts() {
                     : new Date().toLocaleString();
 
                 const postText = document.createElement("p");
-                postText.innerHTML = post.text;
+                postText.innerHTML = escapeHTML(post.text); // Защита от XSS
 
                 const usernameElement = document.createElement("p");
-                usernameElement.textContent = `Автор: ${post.username}`;
+                usernameElement.textContent = `Автор: ${escapeHTML(post.username)}`; // Защита от XSS
 
                 postElement.appendChild(usernameElement);
                 postElement.appendChild(postText);
@@ -153,7 +159,7 @@ function login() {
     }
     auth.signInWithEmailAndPassword(email, password)
         .then(() => {
-            showMessage(`Добро пожаловать, ${email}!`, "green");
+            showMessage(`Добро пожаловать, ${escapeHTML(email)}!`, "green");
             closeModal();
             document.querySelector(".login-btn").innerText = email;
         })
@@ -168,9 +174,7 @@ function googleLogin() {
             var user = result.user;
             console.log("Успешный вход через Google:", user);
 
-            var credential = result.credential;
-            var token = credential ? credential.accessToken : null;
-            var userInfo = user.displayName;
+            var userInfo = escapeHTML(user.displayName);
 
             showMessage(`Добро пожаловать, ${userInfo}!`, "green");
             closeModal();
@@ -210,8 +214,8 @@ function register() {
             auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     db.collection("users").doc(userCredential.user.uid).set({
-                        username: username,
-                        email: email,
+                        username: escapeHTML(username),
+                        email: escapeHTML(email),
                         uid: userCredential.user.uid
                     })
                     .then(() => {

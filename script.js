@@ -117,7 +117,7 @@ function loadPosts() {
 
                 const usernameElement = document.createElement("p")
                 const userProfileLink = document.createElement("a");
-                userProfileLink.href = `profile.html?uid=${post.userId}`;
+                userProfileLink.href = `userprofile.html?uid=${post.userId}`;
                 userProfileLink.textContent = `Автор: ${escapeHTML(post.username)}`;
                 usernameElement.appendChild(userProfileLink);
 

@@ -1,4 +1,3 @@
-
 var firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
     authDomain: "reaversocial.firebaseapp.com",
@@ -30,6 +29,29 @@ auth.onAuthStateChanged(function(user) {
         }).catch(function(error) {
             console.error("Ошибка получения документа: ", error);
         });
+
+        document.getElementById("editBioBtn").addEventListener("click", function() {
+            var bioContent = document.getElementById("bio").textContent;
+            document.getElementById("bioInput").value = bioContent === "Биография не задана." ? "" : bioContent;
+            document.getElementById("bioEditModal").style.display = "block";
+        });
+
+        document.getElementById("saveBioBtn").addEventListener("click", function() {
+            var newBio = document.getElementById("bioInput").value;
+            db.collection("users").doc(userId).update({
+                bio: newBio
+            }).then(function() {
+                document.getElementById("bio").textContent = newBio || "Биография не задана.";
+                document.getElementById("bioEditModal").style.display = "none";
+            }).catch(function(error) {
+                console.error("Ошибка обновления биографии: ", error);
+            });
+        });
+
+        document.getElementById("cancelBioBtn").addEventListener("click", function() {
+            document.getElementById("bioEditModal").style.display = "none";
+        });
+
     } else {
         window.location.href = "login.html";
     }

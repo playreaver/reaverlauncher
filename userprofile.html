@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h1 id="profileUsername"></h1>
+        <img id="profileAvatar" src="default-avatar.png" alt="Аватар" width="150">
+        <p id="profileBio">Биография: <span id="bioContent">Загрузка...</span></p>
+
+        <div id="userPosts">
+            <h2>Посты пользователя</h2>
+            <div id="posts"></div>
+        </div>
+    </div>
+
+    <script src="userprofile.js"></script>
+</body>
+</html>

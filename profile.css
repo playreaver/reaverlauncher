@@ -63,8 +63,8 @@ body {
 }
 
 #posts {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: flex;
+    flex-direction: column;
     flex-direction: column; 
     gap: 8px;
     width: 100%;

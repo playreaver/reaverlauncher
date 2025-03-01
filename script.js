@@ -109,8 +109,6 @@ function loadPosts() {
                 const postText = document.createElement("p");
                 postText.textContent = post.text.replace(/<br>/g, "\n");
 
-sassy scene, [01.03.2025 0:56]
-// Создание элемента для отображения никнейма
                 const usernameElement = document.createElement("p");
                 usernameElement.textContent = Автор: ${post.username}; // Отображаем ник
 
@@ -162,7 +160,6 @@ function login() {
         .catch(error => showMessage(error.message, "red"));
 }
 
-// Функция для входа через Google
 function googleLogin() {
     var provider = new firebase.auth.GoogleAuthProvider();
 
@@ -210,7 +207,6 @@ function register() {
                 return;
             }
 
-sassy scene, [01.03.2025 0:56]
 auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
                     db.collection("users").doc(userCredential.user.uid).set({

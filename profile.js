@@ -1,4 +1,8 @@
-var firebaseConfig = {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
     authDomain: "reaversocial.firebaseapp.com",
     projectId: "reaversocial",
@@ -8,20 +12,21 @@ var firebaseConfig = {
     measurementId: "G-CD344TGD2D"
 };
 
-firebase.initializeApp(firebaseConfig);
-var db = firebase.firestore();
-var auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-auth.onAuthStateChanged(function(user) {
-    console.log("Пользователь:", user); 
+onAuthStateChanged(auth, async (user) => {
+    console.log("Пользователь:", user);
     if (user) {
-        var userId = user.uid;
+        const userId = user.uid;
         console.log("UID пользователя:", userId);
 
-        db.collection("users").doc(userId).get().then(function(doc) {
-            if (doc.exists) {
-                var userData = doc.data();
-                console.log("Данные пользователя:", userData); 
+        try {
+            const userDoc = await getDoc(doc(db, "users", userId));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                console.log("Данные пользователя:", userData);
 
                 document.getElementById("username").textContent = userData.username;
                 document.getElementById("bio").textContent = userData.bio || "Биография не задана.";
@@ -29,11 +34,11 @@ auth.onAuthStateChanged(function(user) {
             } else {
                 console.log("Документ не найден!");
             }
-        }).catch(function(error) {
-            console.error("Ошибка получения документа: ", error);
-        });
+        } catch (error) {
+            console.error("Ошибка получения документа:", error);
+        }
     } else {
-        console.log("Пользователь не авторизован, перенаправление на login.html");
+        console.log("Пользователь не авторизован, перенаправление...");
         window.location.href = "login.html";
     }
 });

@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDUn0QjsY8GYRuuFGzOMmloeJegtxxMZCc",
@@ -23,7 +23,8 @@ onAuthStateChanged(auth, async (user) => {
         console.log("UID пользователя:", userId);
 
         try {
-            const userDoc = await getDoc(doc(db, "users", userId));
+            const userDocRef = doc(db, "users", userId);
+            const userDoc = await getDoc(userDocRef);
             if (userDoc.exists()) {
                 const userData = userDoc.data();
                 console.log("Данные пользователя:", userData);
@@ -31,6 +32,28 @@ onAuthStateChanged(auth, async (user) => {
                 document.getElementById("username").textContent = userData.username;
                 document.getElementById("bio").textContent = userData.bio || "Биография не задана.";
                 document.getElementById("avatar").src = userData.avatar || "default-avatar.png";
+
+                document.getElementById("editBioBtn").addEventListener("click", () => {
+                    document.getElementById("bioEditTextarea").value = userData.bio || "";
+                    document.getElementById("bioEditModal").style.display = "flex";
+                });
+
+                document.getElementById("saveBioBtn").addEventListener("click", async () => {
+                    const newBio = document.getElementById("bioEditTextarea").value.trim();
+                    
+                    try {
+                        await updateDoc(userDocRef, { bio: newBio });
+                        document.getElementById("bio").textContent = newBio || "Биография не задана.";
+                        document.getElementById("bioEditModal").style.display = "none";
+                    } catch (error) {
+                        console.error("Ошибка обновления биографии:", error);
+                    }
+                });
+
+                document.getElementById("cancelBioBtn").addEventListener("click", () => {
+                    document.getElementById("bioEditModal").style.display = "none";
+                });
+
             } else {
                 console.log("Документ не найден!");
             }

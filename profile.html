@@ -3,31 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профиль</title>
+    <title>Профиль пользователя</title>
     <link rel="stylesheet" href="profile.css">
 </head>
 <body>
     <div id="profile">
-        <h2>Мой профиль</h2>
-        <img id="avatar" src="" alt="Avatar" />
-        <p>Имя пользователя: <span id="username"></span></p>
-        <p>Биография: <span id="bio"></span></p>
-        <button id="editProfileBtn">Редактировать профиль</button>
-        <button id="editBioBtn">Редактировать биографию</button>
+        <h2>Ваш профиль</h2>
+        <img src="profile-avatar.jpg" alt="Фото профиля">
+        <p id="username">Имя</p>
+        <p id="bio">Описание</p>
+        <button id="editProfileBtn" onclick="openBioEditModal()">Редактировать профиль</button>
     </div>
 
-    <div id="bioEditModal" class="modal">
+    <div id="bioEditModal">
         <div class="modal-content">
-            <h3>Редактировать биографию</h3>
-            <textarea id="bioInput" placeholder="Введите вашу биографию..."></textarea>
-            <button id="saveBioBtn">Сохранить</button>
-            <button id="cancelBioBtn">Отмена</button>
+            <h2>Редактировать био</h2>
+            <textarea id="bioEditTextarea" placeholder="Напишите новое описание"></textarea>
+            <button onclick="saveBio()">Сохранить</button>
+            <button onclick="closeBioEditModal()">Закрыть</button>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script type="module" src="profile.js"></script>
+    <script>
+        function openBioEditModal() {
+            document.getElementById('bioEditModal').style.display = 'flex';
+        }
+
+        function closeBioEditModal() {
+            document.getElementById('bioEditModal').style.display = 'none';
+        }
+
+        function saveBio() {
+            var bioText = document.getElementById('bioEditTextarea').value;
+            document.getElementById('bio').innerText = bioText;
+            closeBioEditModal();
+        }
+    </script>
 </body>
 </html>

@@ -11,8 +11,8 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-// Функция защиты от XSS
 function escapeHTML(text) {
+    if (typeof text !== "string") return "";
     return text.replace(/</g, "&lt;")
                .replace(/>/g, "&gt;")
                .replace(/&/g, "&amp;")

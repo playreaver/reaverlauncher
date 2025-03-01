@@ -9,35 +9,24 @@
 <body>
     <div id="profile">
         <h2>Ваш профиль</h2>
-        <img src="profile-avatar.jpg" alt="Фото профиля">
+        <img id="avatar" src="profile-avatar.jpg" alt="Фото профиля">
         <p id="username">Имя</p>
         <p id="bio">Описание</p>
-        <button id="editProfileBtn" onclick="openBioEditModal()">Редактировать профиль</button>
+        <button id="editBioBtn">Редактировать профиль</button>
     </div>
 
-    <div id="bioEditModal">
+    <div id="bioEditModal" style="display: none;">
         <div class="modal-content">
             <h2>Редактировать био</h2>
             <textarea id="bioEditTextarea" placeholder="Напишите новое описание"></textarea>
-            <button onclick="saveBio()">Сохранить</button>
-            <button onclick="closeBioEditModal()">Закрыть</button>
+            <button id="saveBioBtn">Сохранить</button>
+            <button id="cancelBioBtn">Закрыть</button>
         </div>
     </div>
 
-    <script>
-        function openBioEditModal() {
-            document.getElementById('bioEditModal').style.display = 'flex';
-        }
-
-        function closeBioEditModal() {
-            document.getElementById('bioEditModal').style.display = 'none';
-        }
-
-        function saveBio() {
-            var bioText = document.getElementById('bioEditTextarea').value;
-            document.getElementById('bio').innerText = bioText;
-            closeBioEditModal();
-        }
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    <script src="profile.js"></script>
 </body>
 </html>

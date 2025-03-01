@@ -263,3 +263,11 @@ function closeModal() {
     console.log("🔸 Закрытие модального окна входа");
     document.getElementById("authModal").style.display = "none";
 }
+
+function openTerms() {
+    window.open('terms.html', '_blank', 'width=600,height=600,left=50%,top=50%,resizable=yes');
+}
+
+function openPrivacy() {
+    window.open('privacy.html', '_blank', 'width=600,height=600,left=50%,top=50%,resizable=yes');
+}

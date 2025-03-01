@@ -244,6 +244,16 @@ window.onload = function() {
     }
 };
 
+function showMessage(text, color = "red") {
+    var msg = document.getElementById("authMessage");
+    if (!msg) {
+        console.error("❌ Элемент #authMessage не найден!");
+        return;
+    }
+    msg.innerText = text;
+    msg.style.color = color;
+}
+
 function toggleLogin() {
     console.log("🔹 Открытие модального окна входа");
     document.getElementById("authModal").style.display = "flex";

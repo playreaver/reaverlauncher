@@ -113,10 +113,13 @@ function loadPosts() {
                     : new Date().toLocaleString();
 
                 const postText = document.createElement("p");
-                postText.innerHTML = escapeHTML(post.text); // Защита от XSS
+                postText.innerHTML = escapeHTML(post.text);
 
-                const usernameElement = document.createElement("p");
-                usernameElement.textContent = `Автор: ${escapeHTML(post.username)}`; // Защита от XSS
+                const usernameElement = document.createElement("p")
+                const userProfileLink = document.createElement("a");
+                userProfileLink.href = `profile.html?uid=${post.userId}`;
+                userProfileLink.textContent = `Автор: ${escapeHTML(post.username)}`;
+                usernameElement.appendChild(userProfileLink);
 
                 postElement.appendChild(usernameElement);
                 postElement.appendChild(postText);

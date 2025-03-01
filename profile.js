@@ -19,7 +19,6 @@ auth.onAuthStateChanged(function(user) {
         db.collection("users").doc(userId).get().then(function(doc) {
             if (doc.exists) {
                 var userData = doc.data();
-
                 document.getElementById("username").textContent = userData.username;
                 document.getElementById("bio").textContent = userData.bio || "Биография не задана.";
                 document.getElementById("avatar").src = userData.avatar || "1exportdslogo.png";
@@ -30,14 +29,16 @@ auth.onAuthStateChanged(function(user) {
             console.error("Ошибка получения документа: ", error);
         });
 
+        // Открытие модального окна редактирования био
         document.getElementById("editBioBtn").addEventListener("click", function() {
             var bioContent = document.getElementById("bio").textContent;
-            document.getElementById("bioInput").value = bioContent === "Биография не задана." ? "" : bioContent;
-            document.getElementById("bioEditModal").style.display = "block";
+            document.getElementById("bioEditTextarea").value = bioContent === "Биография не задана." ? "" : bioContent;
+            document.getElementById("bioEditModal").style.display = "flex";
         });
 
+        // Сохранение нового био
         document.getElementById("saveBioBtn").addEventListener("click", function() {
-            var newBio = document.getElementById("bioInput").value;
+            var newBio = document.getElementById("bioEditTextarea").value;
             db.collection("users").doc(userId).update({
                 bio: newBio
             }).then(function() {
@@ -48,6 +49,7 @@ auth.onAuthStateChanged(function(user) {
             });
         });
 
+        // Закрытие модального окна без изменений
         document.getElementById("cancelBioBtn").addEventListener("click", function() {
             document.getElementById("bioEditModal").style.display = "none";
         });

@@ -64,7 +64,7 @@ body {
 #posts {
     display: flex;
     flex-direction: column; 
-    gap: 20px;
+    gap: 20px;  /* Отступы между постами */
     width: 100%;
     margin-top: 30px;
 }
@@ -101,26 +101,6 @@ body {
     font-size: 12px;
     color: #777;
     text-align: right;
-}
-
-@media (max-width: 600px) {
-    #postSection {
-        padding: 15px;
-        margin: 15px;
-    }
-
-    #postContent {
-        height: 100px;
-    }
-
-    #publishPostBtn {
-        font-size: 18px;
-        padding: 8px 12px;
-    }
-
-    #posts .post {
-        padding: 12px;
-    }
 }
 
 #profile {
@@ -276,5 +256,18 @@ body {
 
     #bioEditModal .modal-content {
         width: 90%;
+    }
+
+    #postContent {
+        height: 100px;
+    }
+
+    #publishPostBtn {
+        font-size: 18px;
+        padding: 8px 12px;
+    }
+
+    #posts .post {
+        padding: 12px;
     }
 }

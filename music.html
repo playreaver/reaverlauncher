@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Музыкальный сервис</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      height: 100vh;
+    }
+    /* Левая панель со списком треков */
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: #fff;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+    .track-list {
+      list-style: none;
+      padding: 0;
+    }
+    .track-list li {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .track-list li:hover, .track-list li.active {
+      background-color: #34495e;
+    }
+
+    /* Основная область плеера */
+    .player-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background-color: #ecf0f1;
+    }
+    .cover {
+      width: 300px;
+      height: 300px;
+      background-image: url('https://via.placeholder.com/300');
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .info {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .info h3 {
+      margin: 5px 0;
+      font-size: 24px;
+      color: #2c3e50;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      width: 80%;
+    }
+    .controls .time-line {
+      width: 100%;
+      margin: 10px 0;
+    }
+    .controls input[type="range"] {
+      width: 100%;
+    }
+    .controls button {
+      padding: 10px 20px;
+      background-color: #e74c3c;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .controls button:hover {
+      background-color: #c0392b;
+    }
+    /* Кнопка сохранения в плейлист "Любимые" */
+    .favorites-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #f1c40f;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .favorites-btn:hover {
+      background-color: #d4ac0d;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Левая панель: список треков -->
+  <aside class="sidebar">
+    <h2>Список треков</h2>
+    <ul class="track-list">
+      <li class="active" data-cover="https://via.placeholder.com/300/3498db/ffffff?text=Track+1" data-title="Трек 1">Трек 1</li>
+      <li data-cover="https://via.placeholder.com/300/9b59b6/ffffff?text=Track+2" data-title="Трек 2">Трек 2</li>
+      <li data-cover="https://via.placeholder.com/300/1abc9c/ffffff?text=Track+3" data-title="Трек 3">Трек 3</li>
+      <li data-cover="https://via.placeholder.com/300/e67e22/ffffff?text=Track+4" data-title="Трек 4">Трек 4</li>
+      <!-- добавьте дополнительные треки по необходимости -->
+    </ul>
+  </aside>
+
+  <!-- Основная область плеера -->
+  <div class="player-container">
+    <!-- Кнопка сохранения в плейлист "Любимые" -->
+    <button class="favorites-btn">В Любимые</button>
+
+    <!-- Обложка трека -->
+    <div class="cover" id="cover"></div>
+
+    <!-- Информация о треке -->
+    <div class="info">
+      <h3 id="track-title">Трек 1</h3>
+    </div>
+
+    <!-- Элементы управления: кнопка и таймлайн -->
+    <div class="controls">
+      <button id="play-pause">Пауза</button>
+      <div class="time-line">
+        <input type="range" id="progress" min="0" max="100" value="0">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Получаем элементы:
+    const trackList = document.querySelectorAll('.track-list li');
+    const coverElem = document.getElementById('cover');
+    const titleElem = document.getElementById('track-title');
+    const playPauseBtn = document.getElementById('play-pause');
+    const favoritesBtn = document.querySelector('.favorites-btn');
+
+    // Простейшая логика для переключения трека
+    trackList.forEach(item => {
+      item.addEventListener('click', () => {
+        // Удаляем активный класс у всех элементов
+        trackList.forEach(track => track.classList.remove('active'));
+        // Добавляем активный класс к выбранному треку
+        item.classList.add('active');
+
+        // Обновляем обложку и название
+        const newCover = item.dataset.cover;
+        const newTitle = item.dataset.title;
+        coverElem.style.backgroundImage = `url('${newCover}')`;
+        titleElem.textContent = newTitle;
+
+        // Сброс прогресс-бара (для примера)
+        document.getElementById('progress').value = 0;
+      });
+    });
+
+    // Логика кнопки воспроизведения/паузы
+    let isPlaying = true;
+    playPauseBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        playPauseBtn.textContent = 'Воспроизвести';
+      } else {
+        playPauseBtn.textContent = 'Пауза';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    // Логика кнопки "В Любимые" (пока просто сообщение, можно доработать)
+    favoritesBtn.addEventListener('click', () => {
+      const activeTrack = document.querySelector('.track-list li.active');
+      if (activeTrack) {
+        alert(`Трек "${activeTrack.textContent}" добавлен в список "Любимые"!`);
+      }
+    });
+  </script>
+</body>
+</html>
